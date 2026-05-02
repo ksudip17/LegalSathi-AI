@@ -11,12 +11,6 @@ import { toast } from "sonner";
 import { registerUser, initiateGoogleLogin } from "@/lib/api";
 
 
-const handleGoogleLogin = () => {
-  setGoogleLoading(true);
-  initiateGoogleLogin();
-};
-
-
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -82,7 +76,7 @@ export default function RegisterPage() {
 
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
-    window.location.href = `${NODE_API}/auth/google`;
+    initiateGoogleLogin();
   };
 
   return (

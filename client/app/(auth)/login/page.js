@@ -10,16 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "sonner";
 import { loginUser, initiateGoogleLogin } from "@/lib/api";
 
-
-const handleGoogleLogin = () => {
-  setGoogleLoading(true);
-  initiateGoogleLogin();
-};
-
-
-
-
-
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -64,8 +54,7 @@ export default function LoginPage() {
 
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
-    // Redirect to backend Google OAuth route
-    window.location.href = `${NODE_API}/auth/google`;
+    initiateGoogleLogin();
   };
 
   return (
