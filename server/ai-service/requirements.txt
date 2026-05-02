@@ -5,6 +5,7 @@ langchain
 langchain-core
 langchain-community
 langchain-google-genai
+langchain-groq
 weaviate-client
 pytesseract
 Pillow
@@ -13,3 +14,4 @@ python-multipart
 pydantic
 requests
 httpx
+xss
