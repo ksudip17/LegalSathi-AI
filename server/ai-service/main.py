@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from routes.legal_check import router as legal_check_router
@@ -17,6 +18,10 @@ app = FastAPI(
     description="AI microservice for OCR, RAG, and legal document summarization",
     version="1.0.0",
 )
+
+@app.head("/")
+async def head_root():
+    return JSONResponse(content={})
 
 # ─── CORS ─────────────────────────────────────────────────────
 app.add_middleware(

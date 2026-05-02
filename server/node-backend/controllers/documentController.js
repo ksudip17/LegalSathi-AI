@@ -2,6 +2,7 @@ import Document from "../models/Document.js";
 import User from "../models/User.js";
 import { deleteFromCloudinary } from "../utils/cloudinary.js";
 import axios from "axios";
+const AI_URL = (process.env.AI_SERVICE_URL || "http://localhost:8000").replace(/\/$/, "");
 
 // ─── Category Sanitizer ───────────────────────────────────────
 const validCategories = [
@@ -53,7 +54,7 @@ export const analyzeDocument = async (req, res) => {
     try {
       // Call AI service with 3 min timeout for large PDFs
       const aiResponse = await axios.post(
-        `${process.env.AI_SERVICE_URL}/summarize`,
+        `${AI_URL}/summarize`,
         {
           cloudinary_url: path,
           file_type: fileType,
@@ -280,7 +281,7 @@ export const retryAnalysis = async (req, res) => {
     await document.save();
 
     const aiResponse = await axios.post(
-      `${process.env.AI_SERVICE_URL}/summarize`,
+      `${AI_URL}/summarize`,
       {
         cloudinary_url: document.cloudinaryUrl,
         file_type: document.fileType,

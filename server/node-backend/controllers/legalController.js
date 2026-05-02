@@ -1,5 +1,6 @@
 import axios from "axios";
 import User from "../models/User.js";
+const AI_URL = (process.env.AI_SERVICE_URL || "http://localhost:8000").replace(/\/$/, "");
 
 // ─── Ask Legal Question ───────────────────────────────────────
 // POST /api/legal/ask
@@ -23,7 +24,7 @@ export const askLegalQuestion = async (req, res) => {
 
     // Call AI microservice RAG pipeline
     const aiResponse = await axios.post(
-      `${process.env.AI_SERVICE_URL}/rag/ask`,
+      `${AI_URL}/rag/ask`,
       {
         question: question.trim(),
         language,
@@ -106,7 +107,7 @@ export const getRightsByCategory = async (req, res) => {
 
     // Call AI microservice
     const aiResponse = await axios.post(
-      `${process.env.AI_SERVICE_URL}/rag/rights`,
+      `${AI_URL}/rag/rights`,
       {
         category: category.toLowerCase(),
         language,
@@ -164,7 +165,7 @@ export const searchLegalCorpus = async (req, res) => {
 
     // Call AI microservice RAG search
     const aiResponse = await axios.post(
-      `${process.env.AI_SERVICE_URL}/rag/search`,
+      `${AI_URL}/rag/search`,
       {
         query: query.trim(),
         language,
@@ -290,7 +291,7 @@ export const checkLegalStatement = async (req, res) => {
 
     // Call AI microservice
     const aiResponse = await axios.post(
-      `${process.env.AI_SERVICE_URL}/legal-check/check`,
+      `${AI_URL}/legal-check/check`,
       {
         statement: statement.trim(),
         language,
