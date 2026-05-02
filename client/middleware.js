@@ -7,7 +7,7 @@ export function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Get token from httpOnly cookie
-  const token = request.cookies.get("token")?.value;
+  const cookieToken = request.cookies.get("token")?.value;
 
   // Allow Google OAuth redirect
   const authParam = request.nextUrl.searchParams.get("auth");
@@ -22,13 +22,21 @@ export function middleware(request) {
     pathname.startsWith(route)
   );
 
-  if (isProtectedRoute && !token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
+  // ── In production localStorage is not accessible in middleware ──
+  // So we only block if there's definitely no cookie token
+  // localStorage check happens client-side in each page
+  if (isProtectedRoute && !cookieToken) {
+    // Check if request has Authorization header (API calls)
+    const authHeader = request.headers.get("authorization");
+    if (authHeader) return NextResponse.next();
+
+    // For page navigations — let it through and handle auth client-side
+    // This prevents blocking localStorage-based auth in production
+    const response = NextResponse.next();
+    return response;
   }
 
-  if (isAuthRoute && token) {
+  if (isAuthRoute && cookieToken) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

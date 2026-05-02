@@ -57,6 +57,12 @@ export default function LegalCheckPage() {
   const MAX_CHARS = 500;
 
   useEffect(() => {
+    // Check localStorage token (works in production cross-domain)
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
     setCharCount(statement.length);
   }, [statement]);
 

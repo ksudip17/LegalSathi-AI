@@ -39,7 +39,13 @@ export default function AskPage() {
   const [showDisclaimer, setShowDisclaimer] = useState(true);
 
   useEffect(() => {
-    
+    // Check localStorage token (works in production cross-domain)
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
     // Only show modal disclaimer once per session
     const seen = sessionStorage.getItem("disclaimer_seen");
     if (seen) setShowDisclaimer(false);

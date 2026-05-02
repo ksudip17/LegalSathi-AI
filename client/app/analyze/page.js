@@ -46,8 +46,11 @@ export default function AnalyzePage() {
   const [language, setLanguage] = useState("ne");
 
   useEffect(() => {
-    if (!isAuthenticated() || isTokenExpired()) {
-      router.push("/login");
+    // Check localStorage token (works in production cross-domain)
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
     }
   }, []);
 

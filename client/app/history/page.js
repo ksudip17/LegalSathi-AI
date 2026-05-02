@@ -67,6 +67,12 @@ export default function HistoryPage() {
   const [pagination, setPagination] = useState({ total: 0, page: 1, pages: 1 });
 
   useEffect(() => {
+    // Check localStorage token (works in production cross-domain)
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
     loadDocuments();
   }, [activeCategory]);
 
