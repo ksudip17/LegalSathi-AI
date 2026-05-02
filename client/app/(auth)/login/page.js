@@ -8,9 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
-import { loginUser } from "@/lib/api";
+import { loginUser, initiateGoogleLogin } from "@/lib/api";
 
-const NODE_API = process.env.NEXT_PUBLIC_NODE_API_URL || "http://localhost:5001/api";
+
+const handleGoogleLogin = () => {
+  setGoogleLoading(true);
+  initiateGoogleLogin();
+};
+
+
+
+
 
 export default function LoginPage() {
   const router = useRouter();

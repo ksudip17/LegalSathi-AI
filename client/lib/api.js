@@ -13,7 +13,7 @@ const apiFetch = async (url, options = {}) => {
 
   const response = await fetch(url, {
     ...options,
-    credentials: "include", // ← always send cookies
+    credentials: "include",
     headers: {
       ...defaultHeaders,
       ...options.headers,
@@ -52,15 +52,13 @@ export const loginUser = async ({ email, password }) => {
 
 export const logoutUser = async () => {
   try {
-    // Call backend to clear httpOnly cookie
     await fetch(`${NODE_API}/auth/logout`, {
       method: "POST",
-      credentials: "include", // send cookies
+      credentials: "include",
     });
   } catch (error) {
     console.error("Logout error:", error);
   } finally {
-    // Always clear localStorage and redirect
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/login";
@@ -85,6 +83,12 @@ export const changePassword = async ({ currentPassword, newPassword }) => {
   });
 };
 
+// ─── Google OAuth ─────────────────────────────────────────────
+export const initiateGoogleLogin = () => {
+  // Use full backend URL directly — not through Next.js API
+  window.location.href = `${NODE_API}/auth/google`;
+};
+
 // ─── DOCUMENT APIs ────────────────────────────────────────────
 export const analyzeDocument = async (formData) => {
   return await apiFetch(`${NODE_API}/documents/analyze`, {
@@ -93,7 +97,13 @@ export const analyzeDocument = async (formData) => {
   });
 };
 
-export const getUserDocuments = async ({ page = 1, limit = 10, category, status, search } = {}) => {
+export const getUserDocuments = async ({
+  page = 1,
+  limit = 10,
+  category,
+  status,
+  search,
+} = {}) => {
   const params = new URLSearchParams({ page, limit });
   if (category) params.append("category", category);
   if (status) params.append("status", status);
@@ -118,7 +128,11 @@ export const retryAnalysis = async (id) => {
 };
 
 // ─── LEGAL APIs ───────────────────────────────────────────────
-export const askLegalQuestion = async ({ question, language = "ne", history = [] }) => {
+export const askLegalQuestion = async ({
+  question,
+  language = "ne",
+  history = [],
+}) => {
   return await apiFetch(`${NODE_API}/legal/ask`, {
     method: "POST",
     body: JSON.stringify({ question, language, history }),
@@ -132,7 +146,11 @@ export const getRightsByCategory = async ({ category, language = "ne" }) => {
   });
 };
 
-export const searchLegalCorpus = async ({ query, language = "ne", topK = 5 }) => {
+export const searchLegalCorpus = async ({
+  query,
+  language = "ne",
+  topK = 5,
+}) => {
   return await apiFetch(`${NODE_API}/legal/search`, {
     method: "POST",
     body: JSON.stringify({ query, language, top_k: topK }),
@@ -143,33 +161,33 @@ export const getLegalCategories = async () => {
   return await apiFetch(`${NODE_API}/legal/categories`);
 };
 
+export const checkLegalStatement = async ({
+  statement,
+  language = "ne",
+}) => {
+  return await apiFetch(`${NODE_API}/legal/check`, {
+    method: "POST",
+    body: JSON.stringify({ statement, language }),
+  });
+};
+
 // ─── UTILITY HELPERS ─────────────────────────────────────────
 export const isAuthenticated = () => {
   if (typeof window === "undefined") return false;
-
-  // Check localStorage token (local auth)
   if (localStorage.getItem("token")) return true;
-
-  // Check Google OAuth cookie (google auth)
   const cookies = document.cookie.split(";");
-  const hasTokenCookie = cookies.some((c) =>
-    c.trim().startsWith("token=")
-  );
-  return hasTokenCookie;
+  return cookies.some((c) => c.trim().startsWith("token="));
 };
-
 
 export const getStoredUser = () => {
   if (typeof window === "undefined") return null;
   try {
-    // Try localStorage first
     const localUser = localStorage.getItem("user");
     if (localUser) return JSON.parse(localUser);
-
-    // Try Google OAuth cookie
     const cookies = document.cookie.split(";");
-    const userCookie = cookies
-      .find((c) => c.trim().startsWith("user_info="));
+    const userCookie = cookies.find((c) =>
+      c.trim().startsWith("user_info=")
+    );
     if (userCookie) {
       const value = decodeURIComponent(userCookie.split("=")[1]);
       return JSON.parse(value);
@@ -197,24 +215,12 @@ export const decodeToken = () => {
 };
 
 export const isTokenExpired = () => {
-  // For Google auth — token is in httpOnly cookie
-  // We can't decode it client-side, so trust the cookie exists
   const cookies = document.cookie.split(";");
   const hasTokenCookie = cookies.some((c) =>
     c.trim().startsWith("token=")
   );
-  if (hasTokenCookie) return false; // cookie exists = not expired
-
-  // For local auth — decode and check expiry
+  if (hasTokenCookie) return false;
   const decoded = decodeToken();
   if (!decoded || !decoded.exp) return true;
   return decoded.exp * 1000 < Date.now();
-};
-
-// ─── IS THIS LEGAL? ───────────────────────────────────────────
-export const checkLegalStatement = async ({ statement, language = "ne" }) => {
-  return await apiFetch(`${NODE_API}/legal/check`, {
-    method: "POST",
-    body: JSON.stringify({ statement, language }),
-  });
 };
