@@ -149,32 +149,41 @@ export default function DashboardPage() {
   useEffect(() => {
   const init = async () => {
     try {
-      // Step 1 — Handle Google OAuth cookie on first load
+      // ── FIRST: Handle Google OAuth token from URL ──
       const params = new URLSearchParams(window.location.search);
+
       if (params.get("auth") === "google") {
-        const cookies = document.cookie.split(";");
-        const userCookie = cookies.find((c) =>
-          c.trim().startsWith("user_info=")
-        );
-        if (userCookie) {
-          const value = decodeURIComponent(userCookie.split("=")[1]);
-          const googleUser = JSON.parse(value);
-          localStorage.setItem("user", JSON.stringify(googleUser));
-          localStorage.setItem("token", "google_auth");
-          setUser(googleUser);
-          setLoading(false);
+        const token = params.get("token");
+        const userParam = params.get("user");
+
+        if (token) {
+          // Save token FIRST before any API calls
+          localStorage.setItem("token", token);
         }
+
+        if (userParam) {
+          try {
+            const googleUser = JSON.parse(decodeURIComponent(userParam));
+            localStorage.setItem("user", JSON.stringify(googleUser));
+            setUser(googleUser);
+            setLoading(false);
+          } catch (e) {
+            console.error("Failed to parse user from URL");
+          }
+        }
+
+        // Clean URL immediately
         window.history.replaceState({}, "", "/dashboard");
       }
 
-      // Step 2 — Show stored user immediately
+      // ── SECOND: Show stored user immediately ──
       const storedUser = getStoredUser();
       if (storedUser) {
         setUser(storedUser);
         setLoading(false);
       }
 
-      // Step 3 — Fetch fresh data in background
+      // ── THIRD: Now fetch fresh data (token is in localStorage) ──
       const [meData, docsData] = await Promise.all([
         getMe(),
         getUserDocuments({ limit: 3 }),
@@ -186,6 +195,12 @@ export default function DashboardPage() {
 
     } catch (error) {
       console.error("Dashboard error:", error.message);
+
+      if (error.message.includes("Too many requests")) {
+        toast.warning("Too many requests. Please wait a moment.");
+        return;
+      }
+
       if (
         error.message.includes("401") ||
         error.message.includes("Access denied")
@@ -195,6 +210,7 @@ export default function DashboardPage() {
         window.location.href = "/login";
         return;
       }
+
       toast.error("Failed to load dashboard.");
     } finally {
       setLoading(false);
