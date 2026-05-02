@@ -22,11 +22,28 @@ const PORT = process.env.PORT || 5001;
 // ─── Security Middleware ──────────────────────────────────────
 app.use(helmet());
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://legalsaathi-blush.vercel.app",
+  process.env.CLIENT_URL,
+].filter(Boolean).map((origin) => origin.replace(/\/$/, "")); // remove trailing slash
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+
+      const cleanOrigin = origin.replace(/\/$/, "");
+      if (allowedOrigins.includes(cleanOrigin)) {
+        callback(null, true);
+      } else {
+        console.warn(`❌ CORS blocked origin: ${origin}`);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
