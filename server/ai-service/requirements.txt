@@ -14,4 +14,3 @@ python-multipart
 pydantic
 requests
 httpx
-xss
