@@ -19,39 +19,44 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// ─── Trust Render Proxy ───────────────────────────────────────
+app.set("trust proxy", 1);
+
 // ─── Security Middleware ──────────────────────────────────────
 app.use(helmet());
 
+// ─── CORS ─────────────────────────────────────────────────────
 const allowedOrigins = [
   "http://localhost:3000",
   "https://legalsaathi-blush.vercel.app",
   process.env.CLIENT_URL,
-].filter(Boolean).map((origin) => origin.replace(/\/$/, "")); // remove trailing slash
+].filter(Boolean).map((origin) => origin.replace(/\/$/, ""));
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, curl, etc.)
-      if (!origin) return callback(null, true);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const cleanOrigin = origin.replace(/\/$/, "");
+    if (allowedOrigins.includes(cleanOrigin)) {
+      callback(null, true);
+    } else {
+      console.warn(`❌ CORS blocked origin: ${origin}`);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
-      const cleanOrigin = origin.replace(/\/$/, "");
-      if (allowedOrigins.includes(cleanOrigin)) {
-        callback(null, true);
-      } else {
-        console.warn(`❌ CORS blocked origin: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options("*", cors(corsOptions));
 
 // ─── Rate Limiting ────────────────────────────────────────────
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 500,
   message: {
     success: false,
     message: "Too many requests. Please try again later.",
@@ -61,7 +66,7 @@ app.use("/api", limiter);
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: process.env.NODE_ENV === "development" ? 100 : 20,
   message: {
     success: false,
     message: "Too many auth attempts. Please try again later.",
@@ -146,6 +151,15 @@ app.use((req, res) => {
 // ─── Global Error Handler ─────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error(`❌ Error: ${err.message}`);
+
+  // Handle CORS errors
+  if (err.message === "Not allowed by CORS") {
+    return res.status(403).json({
+      success: false,
+      message: "CORS: Origin not allowed.",
+    });
+  }
+
   res.status(err.status || 500).json({
     success: false,
     message: err.message || "Internal Server Error",
@@ -161,6 +175,7 @@ const start = async () => {
     console.log(`📦 Environment: ${process.env.NODE_ENV}`);
     console.log(`🛡️  Security: XSS + NoSQL injection protection enabled`);
     console.log(`🔐 Google OAuth: enabled`);
+    console.log(`🌐 Allowed Origins: ${allowedOrigins.join(", ")}`);
   });
 };
 
