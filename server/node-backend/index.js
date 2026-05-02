@@ -50,8 +50,21 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Handle preflight requests
-app.options("/(.*)", cors(corsOptions));
+// Handle preflight request
+// Handle preflight manually
+app.use((req, res, next) => {
+  const origin = req.headers.origin?.replace(/\/$/, "");
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  }
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  next();
+});
 
 
 // ─── Rate Limiting ────────────────────────────────────────────
