@@ -138,7 +138,6 @@ export const login = async (req, res) => {
 // ─── Google OAuth Callback ────────────────────────────────────
 export const googleAuthCallback = async (req, res) => {
   try {
-    // req.user is set by Passport after successful Google auth
     const user = req.user;
 
     if (!user) {
@@ -149,29 +148,21 @@ export const googleAuthCallback = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    // Set httpOnly cookie
+    // Set cookie for same-domain
     res.cookie("token", token, cookieOptions);
 
-    // Store user info in a readable cookie for frontend
-    res.cookie(
-      "user_info",
-      JSON.stringify({
-        _id: user._id,
-        fullName: user.fullName,
-        email: user.email,
-        avatar: user.avatar,
-        authProvider: user.authProvider,
-      }),
-      {
-        httpOnly: false, // frontend needs to read this
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      }
-    );
+    // Also pass token in URL for cross-domain (production)
+    const userInfo = encodeURIComponent(JSON.stringify({
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      avatar: user.avatar,
+      authProvider: user.authProvider,
+    }));
 
-    // Redirect to dashboard
-    return res.redirect(`${process.env.CLIENT_URL}/dashboard?auth=google`);
+    return res.redirect(
+      `${process.env.CLIENT_URL}/dashboard?auth=google&token=${token}&user=${userInfo}`
+    );
 
   } catch (error) {
     console.error(`❌ Google callback error: ${error.message}`);

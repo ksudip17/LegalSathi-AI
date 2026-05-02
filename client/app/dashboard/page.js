@@ -85,21 +85,29 @@ export default function DashboardPage() {
   // ─── Load Dashboard ─────────────────────────────────────────
   const loadDashboard = async () => {
     try {
-      // Step 1 — Handle Google OAuth cookie on first load
+      // Step 1 — Handle Google OAuth token from URL (production cross-domain)
       const params = new URLSearchParams(window.location.search);
+
       if (params.get("auth") === "google") {
-        const cookies = document.cookie.split(";");
-        const userCookie = cookies.find((c) =>
-          c.trim().startsWith("user_info=")
-        );
-        if (userCookie) {
-          const value = decodeURIComponent(userCookie.split("=")[1]);
-          const googleUser = JSON.parse(value);
-          localStorage.setItem("user", JSON.stringify(googleUser));
-          localStorage.setItem("token", "google_auth");
-          setUser(googleUser);
-          setLoading(false);
+        const token = params.get("token");
+        const userParam = params.get("user");
+
+        if (token) {
+          localStorage.setItem("token", token);
         }
+
+        if (userParam) {
+          try {
+            const googleUser = JSON.parse(decodeURIComponent(userParam));
+            localStorage.setItem("user", JSON.stringify(googleUser));
+            setUser(googleUser);
+            setLoading(false);
+          } catch (e) {
+            console.error("Failed to parse user from URL");
+          }
+        }
+
+        // Clean URL — remove sensitive token from browser history
         window.history.replaceState({}, "", "/dashboard");
       }
 
