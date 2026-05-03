@@ -13,4 +13,4 @@ pymupdf
 python-multipart
 pydantic
 requests
-httpx
+httpxgroq
