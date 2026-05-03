@@ -2,6 +2,8 @@ import Document from "../models/Document.js";
 import User from "../models/User.js";
 import { deleteFromCloudinary } from "../utils/cloudinary.js";
 import axios from "axios";
+
+// ─── AI Service URL (no trailing slash) ──────────────────────
 const AI_URL = (process.env.AI_SERVICE_URL || "http://localhost:8000").replace(/\/$/, "");
 
 // ─── Category Sanitizer ───────────────────────────────────────
@@ -39,7 +41,6 @@ export const analyzeDocument = async (req, res) => {
     };
     const fileType = fileTypeMap[mimetype] || "pdf";
 
-    // Create document record
     const document = await Document.create({
       user: req.user._id,
       originalName: originalname,
@@ -52,7 +53,6 @@ export const analyzeDocument = async (req, res) => {
     });
 
     try {
-      // Call AI service with 3 min timeout for large PDFs
       const aiResponse = await axios.post(
         `${AI_URL}/summarize`,
         {
@@ -61,7 +61,7 @@ export const analyzeDocument = async (req, res) => {
           language,
           document_id: document._id.toString(),
         },
-        { timeout: 180000 }
+        { timeout: 300000 } // 5 minutes for Render free tier
       );
 
       const {
@@ -98,7 +98,7 @@ export const analyzeDocument = async (req, res) => {
       });
 
     } catch (aiError) {
-      // ── Fix 5: Cleanup Cloudinary on AI failure ──
+      // Cleanup Cloudinary on AI failure
       if (document.cloudinaryPublicId) {
         try {
           await deleteFromCloudinary(
@@ -288,7 +288,7 @@ export const retryAnalysis = async (req, res) => {
         language: document.language,
         document_id: document._id.toString(),
       },
-      { timeout: 180000 }
+      { timeout: 300000 }
     );
 
     const {

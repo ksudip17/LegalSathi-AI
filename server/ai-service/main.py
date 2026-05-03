@@ -1,17 +1,15 @@
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
-from routes.legal_check import router as legal_check_router
 import os
 
-# Load environment variables
 load_dotenv()
 
-# Import routes
 from routes.ocr import router as ocr_router
 from routes.rag import router as rag_router
 from routes.summarize import router as summarize_router
+from routes.legal_check import router as legal_check_router
 
 app = FastAPI(
     title="LegalSaathi AI Service",
@@ -19,17 +17,10 @@ app = FastAPI(
     version="1.0.0",
 )
 
-@app.head("/")
-async def head_root():
-    return JSONResponse(content={})
-
 # ─── CORS ─────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5001",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -54,8 +45,14 @@ async def root():
             "rag_rights": "/rag/rights",
             "rag_search": "/rag/search",
             "summarize": "/summarize",
+            "legal_check": "/legal-check/check",
         },
     }
+
+# ─── HEAD handler for Render health checks ────────────────────
+@app.head("/")
+async def head_root():
+    return JSONResponse(content={})
 
 @app.get("/health")
 async def health():

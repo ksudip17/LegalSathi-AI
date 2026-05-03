@@ -1,9 +1,10 @@
 import axios from "axios";
 import User from "../models/User.js";
+
+// ─── AI Service URL (no trailing slash) ──────────────────────
 const AI_URL = (process.env.AI_SERVICE_URL || "http://localhost:8000").replace(/\/$/, "");
 
 // ─── Ask Legal Question ───────────────────────────────────────
-// POST /api/legal/ask
 export const askLegalQuestion = async (req, res) => {
   try {
     const { question, language = "ne", history = [] } = req.body;
@@ -22,13 +23,12 @@ export const askLegalQuestion = async (req, res) => {
       });
     }
 
-    // Call AI microservice RAG pipeline
     const aiResponse = await axios.post(
       `${AI_URL}/rag/ask`,
       {
         question: question.trim(),
         language,
-        history: history.slice(-10), // send last 10 messages for context
+        history: history.slice(-10),
         user_id: req.user._id.toString(),
       },
       { timeout: 30000 }
@@ -36,7 +36,6 @@ export const askLegalQuestion = async (req, res) => {
 
     const { answer, laws_cited, sources, confidence } = aiResponse.data;
 
-    // Increment user questions count
     await User.findByIdAndUpdate(req.user._id, {
       $inc: { questionsAsked: 1 },
     });
@@ -52,23 +51,19 @@ export const askLegalQuestion = async (req, res) => {
     });
 
   } catch (error) {
-    // AI service timeout
     if (error.code === "ECONNABORTED") {
       return res.status(504).json({
         success: false,
         message: "AI service timed out. Please try again.",
       });
     }
-
-    // AI service unavailable
     if (error.code === "ECONNREFUSED") {
       return res.status(503).json({
         success: false,
-        message: "AI service is currently unavailable. Please try again later.",
+        message: "AI service is currently unavailable.",
       });
     }
-
-    console.error(`askLegalQuestion error: ${error.message}`);
+    console.error(`❌ askLegalQuestion error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to process your question. Please try again.",
@@ -77,18 +72,13 @@ export const askLegalQuestion = async (req, res) => {
 };
 
 // ─── Get Rights By Category ───────────────────────────────────
-// POST /api/legal/rights
 export const getRightsByCategory = async (req, res) => {
   try {
     const { category, language = "ne" } = req.body;
 
     const validCategories = [
-      "land",
-      "labor",
-      "criminal",
-      "family",
-      "consumer",
-      "civil",
+      "land", "labor", "criminal",
+      "family", "consumer", "civil",
     ];
 
     if (!category) {
@@ -105,7 +95,6 @@ export const getRightsByCategory = async (req, res) => {
       });
     }
 
-    // Call AI microservice
     const aiResponse = await axios.post(
       `${AI_URL}/rag/rights`,
       {
@@ -134,15 +123,13 @@ export const getRightsByCategory = async (req, res) => {
         message: "AI service timed out. Please try again.",
       });
     }
-
     if (error.code === "ECONNREFUSED") {
       return res.status(503).json({
         success: false,
         message: "AI service is currently unavailable.",
       });
     }
-
-    console.error(`getRightsByCategory error: ${error.message}`);
+    console.error(`❌ getRightsByCategory error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch rights. Please try again.",
@@ -151,7 +138,6 @@ export const getRightsByCategory = async (req, res) => {
 };
 
 // ─── Search Legal Corpus ──────────────────────────────────────
-// POST /api/legal/search
 export const searchLegalCorpus = async (req, res) => {
   try {
     const { query, language = "ne", topK = 5 } = req.body;
@@ -163,13 +149,12 @@ export const searchLegalCorpus = async (req, res) => {
       });
     }
 
-    // Call AI microservice RAG search
     const aiResponse = await axios.post(
       `${AI_URL}/rag/search`,
       {
         query: query.trim(),
         language,
-        top_k: Math.min(topK, 10), // cap at 10 results
+        top_k: Math.min(topK, 10),
       },
       { timeout: 15000 }
     );
@@ -189,15 +174,7 @@ export const searchLegalCorpus = async (req, res) => {
         message: "Search timed out. Please try again.",
       });
     }
-
-    if (error.code === "ECONNREFUSED") {
-      return res.status(503).json({
-        success: false,
-        message: "Search service is currently unavailable.",
-      });
-    }
-
-    console.error(`searchLegalCorpus error: ${error.message}`);
+    console.error(`❌ searchLegalCorpus error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Search failed. Please try again.",
@@ -206,9 +183,17 @@ export const searchLegalCorpus = async (req, res) => {
 };
 
 // ─── Get Legal Categories ─────────────────────────────────────
-// GET /api/legal/categories
+let categoriesCache = null;
+
 export const getLegalCategories = async (req, res) => {
   try {
+    if (categoriesCache) {
+      return res.status(200).json({
+        success: true,
+        categories: categoriesCache,
+      });
+    }
+
     const categories = [
       {
         id: "land",
@@ -248,13 +233,15 @@ export const getLegalCategories = async (req, res) => {
       },
     ];
 
+    categoriesCache = categories;
+
     return res.status(200).json({
       success: true,
       categories,
     });
 
   } catch (error) {
-    console.error(`getLegalCategories error: ${error.message}`);
+    console.error(`❌ getLegalCategories error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch categories.",
@@ -263,7 +250,6 @@ export const getLegalCategories = async (req, res) => {
 };
 
 // ─── Is This Legal? ───────────────────────────────────────────
-// POST /api/legal/check
 export const checkLegalStatement = async (req, res) => {
   try {
     const { statement, language = "ne" } = req.body;
@@ -278,18 +264,17 @@ export const checkLegalStatement = async (req, res) => {
     if (statement.trim().length < 5) {
       return res.status(400).json({
         success: false,
-        message: "Statement is too short. Please describe the situation.",
+        message: "Statement is too short.",
       });
     }
 
     if (statement.trim().length > 500) {
       return res.status(400).json({
         success: false,
-        message: "Statement is too long. Please keep it under 500 characters.",
+        message: "Statement is too long. Keep it under 500 characters.",
       });
     }
 
-    // Call AI microservice
     const aiResponse = await axios.post(
       `${AI_URL}/legal-check/check`,
       {
@@ -300,7 +285,6 @@ export const checkLegalStatement = async (req, res) => {
       { timeout: 30000 }
     );
 
-    // Increment questions asked
     await User.findByIdAndUpdate(req.user._id, {
       $inc: { questionsAsked: 1 },
     });
