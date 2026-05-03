@@ -1,21 +1,32 @@
 import os
 import json
 import asyncio
+from groq import Groq
 from dotenv import load_dotenv
-from langchain_groq import ChatGroq
-from langchain_core.prompts import PromptTemplate
-from langchain_core.messages import HumanMessage, SystemMessage
 from core.weaviate_client import search_legal_corpus
 
 load_dotenv()
 
-# ─── Initialize Groq LLM ──────────────────────────────────────
-def get_llm(temperature: float = 0.3):
-    return ChatGroq(
+# ─── Direct Groq Client ───────────────────────────────────────
+def get_groq_client():
+    return Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+# ─── Sync Groq Call ───────────────────────────────────────────
+def groq_complete(prompt: str, temperature: float = 0.3) -> str:
+    client = get_groq_client()
+    response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        groq_api_key=os.getenv("GROQ_API_KEY"),
-        temperature=temperature,
+        messages=[{"role": "user", "content": prompt}],
         max_tokens=2048,
+        temperature=temperature,
+    )
+    return response.choices[0].message.content.strip()
+
+# ─── Async Groq Call ──────────────────────────────────────────
+async def groq_complete_async(prompt: str, temperature: float = 0.3) -> str:
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(
+        None, lambda: groq_complete(prompt, temperature)
     )
 
 # ─── Language Instructions ────────────────────────────────────
@@ -25,9 +36,13 @@ LANGUAGE_INSTRUCTIONS = {
     "en": "You must respond in English. Use simple and clear language.",
 }
 
-# ─── Rate Limit Handler ───────────────────────────────────────
+# ─── Rate Limit Check ─────────────────────────────────────────
 def is_rate_limit_error(e):
-    return "rate_limit" in str(e).lower() or "429" in str(e) or "too many" in str(e).lower()
+    return (
+        "rate_limit" in str(e).lower()
+        or "429" in str(e)
+        or "too many" in str(e).lower()
+    )
 
 def rate_limit_response():
     return {
@@ -59,9 +74,11 @@ async def summarize_legal_document(
     category: str = None,
 ) -> dict:
     try:
-        llm = get_llm(temperature=0.2)
-        lang_instruction = LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS["ne"])
+        lang_instruction = LANGUAGE_INSTRUCTIONS.get(
+            language, LANGUAGE_INSTRUCTIONS["ne"]
+        )
 
+        # Search Weaviate for relevant laws
         relevant_laws = search_legal_corpus(
             query=extracted_text[:500],
             category=category,
@@ -102,21 +119,19 @@ Use this exact format:
     "laws_cited": ["Law 1 - Section X", "Law 2 - Section Y"]
 }}"""
 
-        # ── Retry up to 3 times on rate limit ──
         for attempt in range(3):
             try:
-                response = await llm.ainvoke([HumanMessage(content=prompt)])
-                result = extract_json(response.content)
+                content = await groq_complete_async(prompt, temperature=0.2)
+                result = extract_json(content)
                 return result
             except Exception as e:
                 if is_rate_limit_error(e):
                     if attempt < 2:
                         wait_time = (attempt + 1) * 30
-                        print(f"⚠️ Rate limit hit. Waiting {wait_time}s before retry {attempt + 2}/3...")
+                        print(f"⚠️ Rate limit hit. Waiting {wait_time}s...")
                         await asyncio.sleep(wait_time)
                         continue
                     else:
-                        print("❌ Rate limit exceeded after 3 attempts.")
                         return rate_limit_response()
                 raise e
 
@@ -140,17 +155,14 @@ async def answer_legal_question(
     history: list = [],
 ) -> dict:
     try:
-        llm = get_llm(temperature=0.3)
-        lang_instruction = LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS["ne"])
-
-        # Search English corpus first — cleaner text
-        relevant_laws_en = search_legal_corpus(
-            query=question,
-            top_k=4,
+        lang_instruction = LANGUAGE_INSTRUCTIONS.get(
+            language, LANGUAGE_INSTRUCTIONS["ne"]
         )
 
-        # Also search with English translation of common Nepali terms
-        relevant_laws = relevant_laws_en
+        relevant_laws = search_legal_corpus(
+            query=question,
+            top_k=5,
+        )
 
         laws_context = "No specific laws found in database."
         laws_cited = []
@@ -158,8 +170,8 @@ async def answer_legal_question(
         if relevant_laws:
             laws_context = "Relevant Nepal Laws from Legal Database:\n"
             for law in relevant_laws:
-                laws_context += f"\n[{law['source']} — {law['section']}]\n{law['content'][:400]}\n"
-                laws_cited.append(f"{law['source']} — {law['section']}")
+                laws_context += f"\n[{law['source']} - {law['section']}]\n{law['content'][:400]}\n"
+                laws_cited.append(f"{law['source']} - {law['section']}")
 
         history_text = ""
         if history:
@@ -173,13 +185,7 @@ You help everyday Nepali citizens understand their legal rights in simple langua
 
 {lang_instruction}
 
-IMPORTANT: Your response must use clean, simple, modern {
-    "नेपाली भाषा (Devanagari script)" if language == "ne"
-    else "Hindi भाषा" if language == "hi"
-    else "English"
-}. 
-Do NOT copy garbled or corrupted text from the legal references. 
-Use your own clean words to explain the concepts.
+IMPORTANT: Write in clean proper language. Do NOT copy garbled or corrupted text.
 
 {history_text}
 
@@ -191,26 +197,21 @@ User Question: {question}
 
 Rules:
 - Always cite specific laws and sections
-- Use simple conversational language that non-lawyers can understand
-- Write clean proper {
-    "नेपाली" if language == "ne"
-    else "Hindi" if language == "hi" 
-    else "English"
-} — never copy corrupted text
+- Use simple language that non-lawyers can understand
 - If you are unsure, say so clearly
 - Always recommend consulting a lawyer for serious matters
 
 You MUST respond ONLY with valid JSON and absolutely nothing else.
 {{
     "answer": "your detailed answer here in clean proper language",
-    "laws_cited": ["Law 1 — Section X", "Law 2 — Section Y"],
+    "laws_cited": ["Law 1 - Section X", "Law 2 - Section Y"],
     "confidence": "high"
 }}"""
 
         for attempt in range(3):
             try:
-                response = await llm.ainvoke([HumanMessage(content=prompt)])
-                result = extract_json(response.content)
+                content = await groq_complete_async(prompt, temperature=0.3)
+                result = extract_json(content)
                 result["laws_cited"] = result.get("laws_cited", laws_cited)
                 return result
             except Exception as e:
@@ -231,7 +232,7 @@ You MUST respond ONLY with valid JSON and absolutely nothing else.
     except Exception as e:
         print(f"❌ answer_legal_question error: {e}")
         return {
-            "answer": "प्रश्न प्रक्रिया गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+            "answer": "Failed to process your question. Please try again.",
             "laws_cited": [],
             "confidence": "low",
         }
@@ -242,8 +243,9 @@ async def get_rights_by_category(
     language: str = "ne",
 ) -> dict:
     try:
-        llm = get_llm(temperature=0.2)
-        lang_instruction = LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS["ne"])
+        lang_instruction = LANGUAGE_INSTRUCTIONS.get(
+            language, LANGUAGE_INSTRUCTIONS["ne"]
+        )
 
         relevant_laws = search_legal_corpus(
             query=f"{category} rights Nepal law",
@@ -268,8 +270,7 @@ Based on Nepal law, explain the key rights of citizens in the category: {categor
 
 {laws_context}
 
-You MUST respond ONLY with valid JSON and absolutely nothing else. No explanation, no markdown, no backticks.
-Use this exact format:
+You MUST respond ONLY with valid JSON and absolutely nothing else.
 {{
     "summary": "brief overview of this legal area",
     "rights": [
@@ -284,20 +285,20 @@ Use this exact format:
 
         for attempt in range(3):
             try:
-                response = await llm.ainvoke([HumanMessage(content=prompt)])
-                result = extract_json(response.content)
+                content = await groq_complete_async(prompt, temperature=0.2)
+                result = extract_json(content)
                 result["laws_cited"] = result.get("laws_cited", laws_cited)
                 return result
             except Exception as e:
                 if is_rate_limit_error(e):
                     if attempt < 2:
                         wait_time = (attempt + 1) * 30
-                        print(f"⚠️ Rate limit hit. Waiting {wait_time}s before retry {attempt + 2}/3...")
+                        print(f"⚠️ Rate limit hit. Waiting {wait_time}s...")
                         await asyncio.sleep(wait_time)
                         continue
                     else:
                         return {
-                            "summary": "Our AI is currently busy. Please wait 30 seconds and try again.",
+                            "summary": "Our AI is currently busy. Please wait 30 seconds.",
                             "rights": [],
                             "laws_cited": [],
                         }
@@ -305,12 +306,6 @@ Use this exact format:
 
     except Exception as e:
         print(f"❌ get_rights_by_category error: {e}")
-        if is_rate_limit_error(e):
-            return {
-                "summary": "Our AI is currently busy. Please wait 30 seconds and try again.",
-                "rights": [],
-                "laws_cited": [],
-            }
         return {
             "summary": "Failed to fetch rights. Please try again.",
             "rights": [],
