@@ -88,7 +88,7 @@ async def extract_text_vision(cloudinary_url: str, file_type: str) -> str:
         client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
         response = client.chat.completions.create(
-            model="meta-llama/llama-4-scout-17b-16e-instruct",
+            model="llama-3.2-11b-vision-preview",
             messages=[
                 {
                     "role": "user",
