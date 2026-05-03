@@ -10,14 +10,14 @@ from core.weaviate_client import search_legal_corpus
 load_dotenv()
 
 # ─── Initialize Groq LLM ──────────────────────────────────────
-# FIND
 def get_llm(temperature: float = 0.3):
     return ChatGroq(
         model="llama-3.3-70b-versatile",
-        api_key=os.getenv("GROQ_API_KEY"),
+        groq_api_key=os.getenv("GROQ_API_KEY"),
         temperature=temperature,
         max_tokens=2048,
     )
+
 # ─── Language Instructions ────────────────────────────────────
 LANGUAGE_INSTRUCTIONS = {
     "ne": "तपाईंले आफ्नो उत्तर नेपाली भाषामा दिनुपर्छ। सरल र स्पष्ट भाषा प्रयोग गर्नुहोस्।",
