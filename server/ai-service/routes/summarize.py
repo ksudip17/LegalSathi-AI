@@ -88,7 +88,40 @@ async def extract_text_vision(cloudinary_url: str, file_type: str) -> str:
         client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
         response = client.chat.completions.create(
-            model="llama-3.2-11b-vision-preview",
+            model="meta-llama/llama-4-scout-17b-16e-instruct",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "Extract all text from this legal document image. Return only the extracted text, nothing else.",
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": cloudinary_url,
+                            },
+                        },
+                    ],
+                }
+            ],
+            max_tokens=2048,
+        )
+
+        return response.choices[0].message.content.strip()
+
+    except Exception as e:
+        print(f"❌ Vision extraction error: {e}")
+        return ""
+    try:
+        from groq import Groq
+        import os
+
+        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+        response = client.chat.completions.create(
+            model="meta-llama/llama-4-scout-17b-16e-instruct",
             messages=[
                 {
                     "role": "user",
