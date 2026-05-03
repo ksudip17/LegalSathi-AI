@@ -310,4 +310,4 @@ You MUST respond ONLY with valid JSON and absolutely nothing else.
             "summary": "Failed to fetch rights. Please try again.",
             "rights": [],
             "laws_cited": [],
-        }
+        }# force redeploy Mon May  4 01:12:03 IST 2026
