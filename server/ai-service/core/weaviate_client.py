@@ -76,6 +76,39 @@ def setup_weaviate_schema():
 
 # ─── Search Legal Corpus ──────────────────────────────────────
 def search_legal_corpus(query: str, category: str = None, top_k: int = 5):
+    try:
+        client = get_weaviate_client()
+        collection = client.collections.get(LEGAL_COLLECTION)
+
+        filters = None
+        if category:
+            from weaviate.classes.query import Filter
+            filters = Filter.by_property("category").equal(category)
+
+        results = collection.query.near_text(
+            query=query,
+            limit=top_k,
+            filters=filters,
+            return_properties=["content", "source", "section", "category", "language"],
+        )
+
+        formatted = []
+        for obj in results.objects:
+            formatted.append({
+                "content": obj.properties.get("content", ""),
+                "source": obj.properties.get("source", ""),
+                "section": obj.properties.get("section", ""),
+                "category": obj.properties.get("category", ""),
+                "language": obj.properties.get("language", "en"),
+            })
+
+        client.close()
+        return formatted
+
+    except Exception as e:
+        print(f"❌ Weaviate search error: {e}")
+        # Return empty list — don't crash the whole pipeline
+        return []
     client = get_weaviate_client()
 
     try:

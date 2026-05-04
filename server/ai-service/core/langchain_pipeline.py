@@ -3,9 +3,10 @@ import json
 import asyncio
 from groq import Groq
 from dotenv import load_dotenv
-from core.weaviate_client import search_legal_corpus
 
 load_dotenv()
+
+print("✅ Using direct Groq SDK — langchain_pipeline v3")
 
 # ─── Direct Groq Client ───────────────────────────────────────
 def get_groq_client():
@@ -46,9 +47,9 @@ def is_rate_limit_error(e):
 
 def rate_limit_response():
     return {
-        "summary": "Our AI is currently busy due to high demand. Please wait 30 seconds and try again.",
+        "summary": "Our AI is currently busy. Please wait 30 seconds and try again.",
         "rights": [],
-        "next_steps": ["Please wait 30 seconds and retry your request."],
+        "next_steps": ["Please wait 30 seconds and retry."],
         "risk_level": "Low",
         "category": "Other",
         "laws_cited": [],
@@ -67,6 +68,25 @@ def extract_json(content: str) -> dict:
         content = content[start:end]
     return json.loads(content)
 
+# ─── Safe Weaviate Search ─────────────────────────────────────
+def safe_search_laws(query: str, category: str = None, top_k: int = 3) -> str:
+    try:
+        from core.weaviate_client import search_legal_corpus
+        relevant_laws = search_legal_corpus(
+            query=query,
+            category=category,
+            top_k=top_k,
+        )
+        if not relevant_laws:
+            return ""
+        laws_context = "\n\nRelevant Nepal Laws:\n"
+        for law in relevant_laws:
+            laws_context += f"- {law['source']} {law['section']}: {law['content'][:300]}\n"
+        return laws_context
+    except Exception as e:
+        print(f"⚠️ Weaviate unavailable — continuing without legal context: {e}")
+        return ""
+
 # ─── Document Summarization Pipeline ─────────────────────────
 async def summarize_legal_document(
     extracted_text: str,
@@ -78,18 +98,12 @@ async def summarize_legal_document(
             language, LANGUAGE_INSTRUCTIONS["ne"]
         )
 
-        # Search Weaviate for relevant laws
-        relevant_laws = search_legal_corpus(
+        # Try to get laws — won't crash if Weaviate is down
+        laws_context = safe_search_laws(
             query=extracted_text[:500],
             category=category,
             top_k=3,
         )
-
-        laws_context = ""
-        if relevant_laws:
-            laws_context = "\n\nRelevant Nepal Laws:\n"
-            for law in relevant_laws:
-                laws_context += f"- {law['source']} {law['section']}: {law['content'][:300]}\n"
 
         prompt = f"""You are LegalSaathi, an expert AI legal assistant specializing in Nepal law.
 
@@ -108,8 +122,7 @@ Analyze the following legal document and provide:
 DOCUMENT TEXT:
 {extracted_text[:3000]}
 
-You MUST respond ONLY with valid JSON and absolutely nothing else. No explanation, no markdown, no backticks.
-Use this exact format:
+You MUST respond ONLY with valid JSON. No explanation, no markdown, no backticks.
 {{
     "summary": "plain language summary here",
     "rights": ["right 1", "right 2", "right 3"],
@@ -121,18 +134,21 @@ Use this exact format:
 
         for attempt in range(3):
             try:
+                print(f"🔄 Calling Groq API — attempt {attempt + 1}...")
                 content = await groq_complete_async(prompt, temperature=0.2)
+                print(f"✅ Groq response received — {len(content)} chars")
                 result = extract_json(content)
+                print(f"✅ JSON parsed successfully")
                 return result
             except Exception as e:
+                print(f"❌ Attempt {attempt + 1} failed: {e}")
                 if is_rate_limit_error(e):
                     if attempt < 2:
                         wait_time = (attempt + 1) * 30
-                        print(f"⚠️ Rate limit hit. Waiting {wait_time}s...")
+                        print(f"⚠️ Rate limit. Waiting {wait_time}s...")
                         await asyncio.sleep(wait_time)
                         continue
-                    else:
-                        return rate_limit_response()
+                    return rate_limit_response()
                 raise e
 
     except Exception as e:
@@ -159,19 +175,19 @@ async def answer_legal_question(
             language, LANGUAGE_INSTRUCTIONS["ne"]
         )
 
-        relevant_laws = search_legal_corpus(
-            query=question,
-            top_k=5,
-        )
-
         laws_context = "No specific laws found in database."
         laws_cited = []
 
-        if relevant_laws:
-            laws_context = "Relevant Nepal Laws from Legal Database:\n"
-            for law in relevant_laws:
-                laws_context += f"\n[{law['source']} - {law['section']}]\n{law['content'][:400]}\n"
-                laws_cited.append(f"{law['source']} - {law['section']}")
+        try:
+            from core.weaviate_client import search_legal_corpus
+            relevant_laws = search_legal_corpus(query=question, top_k=5)
+            if relevant_laws:
+                laws_context = "Relevant Nepal Laws:\n"
+                for law in relevant_laws:
+                    laws_context += f"\n[{law['source']} - {law['section']}]\n{law['content'][:400]}\n"
+                    laws_cited.append(f"{law['source']} - {law['section']}")
+        except Exception as e:
+            print(f"⚠️ Weaviate unavailable for Q&A: {e}")
 
         history_text = ""
         if history:
@@ -181,35 +197,32 @@ async def answer_legal_question(
                 history_text += f"{role}: {msg.get('content', '')}\n"
 
         prompt = f"""You are LegalSaathi, an expert AI legal assistant specializing in Nepal law.
-You help everyday Nepali citizens understand their legal rights in simple language.
 
 {lang_instruction}
 
-IMPORTANT: Write in clean proper language. Do NOT copy garbled or corrupted text.
+IMPORTANT: Write in clean proper language. Do NOT copy garbled text.
 
 {history_text}
-
-Based on the following Nepal legal references, answer the user's question:
 
 {laws_context}
 
 User Question: {question}
 
 Rules:
-- Always cite specific laws and sections
-- Use simple language that non-lawyers can understand
-- If you are unsure, say so clearly
-- Always recommend consulting a lawyer for serious matters
+- Cite specific laws and sections
+- Use simple language for non-lawyers
+- Recommend consulting a lawyer for serious matters
 
-You MUST respond ONLY with valid JSON and absolutely nothing else.
+Respond ONLY with valid JSON:
 {{
-    "answer": "your detailed answer here in clean proper language",
+    "answer": "your detailed answer in clean proper language",
     "laws_cited": ["Law 1 - Section X", "Law 2 - Section Y"],
     "confidence": "high"
 }}"""
 
         for attempt in range(3):
             try:
+                print(f"🔄 Calling Groq for Q&A — attempt {attempt + 1}...")
                 content = await groq_complete_async(prompt, temperature=0.3)
                 result = extract_json(content)
                 result["laws_cited"] = result.get("laws_cited", laws_cited)
@@ -217,16 +230,13 @@ You MUST respond ONLY with valid JSON and absolutely nothing else.
             except Exception as e:
                 if is_rate_limit_error(e):
                     if attempt < 2:
-                        wait_time = (attempt + 1) * 30
-                        print(f"⚠️ Rate limit hit. Waiting {wait_time}s...")
-                        await asyncio.sleep(wait_time)
+                        await asyncio.sleep((attempt + 1) * 30)
                         continue
-                    else:
-                        return {
-                            "answer": "हाम्रो AI अहिले व्यस्त छ। ३० सेकेन्ड पछि फेरि प्रयास गर्नुहोस्।",
-                            "laws_cited": [],
-                            "confidence": "low",
-                        }
+                    return {
+                        "answer": "हाम्रो AI अहिले व्यस्त छ। ३० सेकेन्ड पछि फेरि प्रयास गर्नुहोस्।",
+                        "laws_cited": [],
+                        "confidence": "low",
+                    }
                 raise e
 
     except Exception as e:
@@ -247,30 +257,33 @@ async def get_rights_by_category(
             language, LANGUAGE_INSTRUCTIONS["ne"]
         )
 
-        relevant_laws = search_legal_corpus(
-            query=f"{category} rights Nepal law",
-            category=category,
-            top_k=5,
-        )
-
         laws_context = "No specific laws found."
         laws_cited = []
 
-        if relevant_laws:
-            laws_context = f"Nepal Laws related to {category}:\n"
-            for law in relevant_laws:
-                laws_context += f"\n[{law['source']} - {law['section']}]\n{law['content'][:400]}\n"
-                laws_cited.append(f"{law['source']} - {law['section']}")
+        try:
+            from core.weaviate_client import search_legal_corpus
+            relevant_laws = search_legal_corpus(
+                query=f"{category} rights Nepal law",
+                category=category,
+                top_k=5,
+            )
+            if relevant_laws:
+                laws_context = f"Nepal Laws related to {category}:\n"
+                for law in relevant_laws:
+                    laws_context += f"\n[{law['source']} - {law['section']}]\n{law['content'][:400]}\n"
+                    laws_cited.append(f"{law['source']} - {law['section']}")
+        except Exception as e:
+            print(f"⚠️ Weaviate unavailable for rights: {e}")
 
         prompt = f"""You are LegalSaathi, an expert AI legal assistant specializing in Nepal law.
 
 {lang_instruction}
 
-Based on Nepal law, explain the key rights of citizens in the category: {category.upper()}
+Explain the key rights of citizens in: {category.upper()}
 
 {laws_context}
 
-You MUST respond ONLY with valid JSON and absolutely nothing else.
+Respond ONLY with valid JSON:
 {{
     "summary": "brief overview of this legal area",
     "rights": [
@@ -292,16 +305,13 @@ You MUST respond ONLY with valid JSON and absolutely nothing else.
             except Exception as e:
                 if is_rate_limit_error(e):
                     if attempt < 2:
-                        wait_time = (attempt + 1) * 30
-                        print(f"⚠️ Rate limit hit. Waiting {wait_time}s...")
-                        await asyncio.sleep(wait_time)
+                        await asyncio.sleep((attempt + 1) * 30)
                         continue
-                    else:
-                        return {
-                            "summary": "Our AI is currently busy. Please wait 30 seconds.",
-                            "rights": [],
-                            "laws_cited": [],
-                        }
+                    return {
+                        "summary": "AI is busy. Please wait 30 seconds.",
+                        "rights": [],
+                        "laws_cited": [],
+                    }
                 raise e
 
     except Exception as e:
@@ -310,4 +320,4 @@ You MUST respond ONLY with valid JSON and absolutely nothing else.
             "summary": "Failed to fetch rights. Please try again.",
             "rights": [],
             "laws_cited": [],
-        }# force redeploy Mon May  4 01:12:03 IST 2026
+        }
