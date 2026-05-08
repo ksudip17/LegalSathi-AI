@@ -175,7 +175,7 @@ export default function LandingPage() {
           <Scale className="w-4 h-4 text-primary" />
           <span className="font-semibold text-foreground">LegalSaathi</span>
         </div>
-        <p>© 2025 LegalSaathi. Built for Nepal 🇳🇵</p>
+        <p>© 2026 LegalSaathi. Built for Nepal 🇳🇵</p>
       </footer>
 
     </main>
