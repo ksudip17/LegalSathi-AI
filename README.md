@@ -1,5 +1,3 @@
-
-```md
 <div align="center">
 
 <img src="client/public/logo.png" alt="LegalSaathi Logo" width="200"/>
@@ -14,7 +12,7 @@
 [![Backend](https://img.shields.io/badge/🚀_Backend-Render-22C55E?style=for-the-badge)](https://legalsaathi-backend.onrender.com)
 [![AI Service](https://img.shields.io/badge/🤖_AI_Service-FastAPI-F59E0B?style=for-the-badge)](https://legalsaathi-ai.onrender.com)
 
-![Next.js](https://img.shields.io/badge/Next.js_14-000000?style=flat-square&logo=next.js)
+![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=next.js)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)
@@ -56,7 +54,7 @@ LegalSaathi bridges this gap — giving every Nepali citizen free access to lega
 ┌─────────────────────────────────────────────────────────┐
 │                    LegalSaathi Platform                  │
 ├─────────────────┬───────────────────┬───────────────────┤
-│   Next.js 14    │   Express.js      │    FastAPI        │
+│   Next.js 16    │   Express.js      │    FastAPI        │
 │   Frontend      │   API Gateway     │    AI Service     │
 │   Vercel        │   Render          │    Render         │
 └─────────────────┴───────────────────┴───────────────────┘
@@ -109,7 +107,7 @@ Saved to MongoDB for history
 ### Frontend
 | Technology | Purpose |
 |-----------|---------|
-| Next.js 14 (App Router) | React framework with SSR |
+| Next.js 16 (App Router) | React framework with SSR |
 | Tailwind CSS | Utility-first styling |
 | shadcn/ui | Accessible component library |
 | Lucide React | Icon system |
@@ -149,7 +147,7 @@ Saved to MongoDB for history
 ## 📁 Project Structure
 
 ```
-LegalSaathi/
+legalsathi/
 ├── client/                          # Next.js Frontend
 │   ├── app/
 │   │   ├── (auth)/
@@ -440,7 +438,10 @@ LegalSaathi provides general legal information based on Nepal law. This is not a
 
 ⭐ Star this repo if you find it useful!
 
-</div>
-```
+  <div align="center">
+    <strong>Built for Nepal 🇳🇵</strong>
+    <div><em>न्याय सबैको लागि — Justice for Everyone</em></div>
+    <div>⭐ Star this repo if you find it useful!</div>
+  </div>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
