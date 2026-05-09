@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Scale, FileText, MessageCircle, Shield, ArrowRight, CheckCircle } from "lucide-react";
@@ -34,7 +35,15 @@ export default function LandingPage() {
       {/* Navbar */}
       <nav className="border-b border-border px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
-          <Scale className="text-primary w-6 h-6" />
+          <Image
+            src="/logo.png"
+            alt="LegalSaathi"
+            width={28}
+            height={28}
+            unoptimized
+            priority
+            className="w-7 h-7"
+          />
           <span className="font-bold text-xl text-foreground">LegalSaathi</span>
         </div>
         <div className="flex items-center gap-3">

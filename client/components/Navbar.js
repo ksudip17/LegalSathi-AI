@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
-  Scale,
   FileText,
   MessageCircle,
   History,
@@ -62,7 +62,15 @@ export default function Navbar({ user }) {
 
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center gap-2">
-            <Scale className="text-primary w-6 h-6" />
+            <Image
+              src="/logo.png"
+              alt="LegalSaathi"
+              width={28}
+              height={28}
+              unoptimized
+              priority
+              className="w-7 h-7"
+            />
             <span className="font-bold text-xl text-foreground">LegalSaathi</span>
           </Link>
 

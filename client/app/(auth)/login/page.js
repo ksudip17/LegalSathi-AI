@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Scale, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -67,7 +68,15 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
 
         <div className="flex items-center justify-center gap-2 mb-8">
-          <Scale className="text-primary w-7 h-7" />
+          <Image
+            src="/logo.png"
+            alt="LegalSaathi"
+            width={32}
+            height={32}
+            unoptimized
+            priority
+            className="w-8 h-8"
+          />
           <span className="text-2xl font-bold text-foreground">LegalSaathi</span>
         </div>
 
