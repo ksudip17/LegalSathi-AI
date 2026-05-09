@@ -8,17 +8,17 @@
 
 **Understand your legal rights in Nepali, Hindi, and English — instantly.**
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-legalsaathi--ai.vercel.app-2563EB?style=for-the-badge)](https://legalsaathi-ai.vercel.app)
-[![Backend](https://img.shields.io/badge/🚀_Backend-Render-22C55E?style=for-the-badge)](https://legalsaathi-backend.onrender.com)
-[![AI Service](https://img.shields.io/badge/🤖_AI_Service-FastAPI-F59E0B?style=for-the-badge)](https://legalsaathi-ai.onrender.com)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-legalsaathi--ai.vercel.app-2563EB?style=for-the-badge)]
+[![Backend](https://img.shields.io/badge/🚀_Backend-Render-22C55E?style=for-the-badge)]
+[![AI Service](https://img.shields.io/badge/🤖_AI_Service-FastAPI-F59E0B?style=for-the-badge)]
 
-![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=next.js)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![Weaviate](https://img.shields.io/badge/Weaviate-FF6B35?style=flat-square)
-![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel)
+[![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Weaviate](https://img.shields.io/badge/Weaviate-FF6B35?style=flat-square)](https://weaviate.io/)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com/)
 
 </div>
 
@@ -437,11 +437,5 @@ LegalSaathi provides general legal information based on Nepal law. This is not a
 *न्याय सबैको लागि — Justice for Everyone*
 
 ⭐ Star this repo if you find it useful!
-
-  <div align="center">
-    <strong>Built for Nepal 🇳🇵</strong>
-    <div><em>न्याय सबैको लागि — Justice for Everyone</em></div>
-    <div>⭐ Star this repo if you find it useful!</div>
-  </div>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
