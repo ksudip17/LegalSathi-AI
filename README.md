@@ -8,9 +8,9 @@
 
 **Understand your legal rights in Nepali, Hindi, and English — instantly.**
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-legalsaathi--ai.vercel.app-2563EB?style=for-the-badge)]
-[![Backend](https://img.shields.io/badge/🚀_Backend-Render-22C55E?style=for-the-badge)]
-[![AI Service](https://img.shields.io/badge/🤖_AI_Service-FastAPI-F59E0B?style=for-the-badge)]
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-legalsaathi--ai.vercel.app-2563EB?style=for-the-badge)](https://legalsaathi-ai.vercel.app)
+[![Backend](https://img.shields.io/badge/🚀_Backend-Render-22C55E?style=for-the-badge)](https://legalsaathi-backend.onrender.com)
+[![AI Service](https://img.shields.io/badge/🤖_AI_Service-FastAPI-F59E0B?style=for-the-badge)](https://legalsaathi-ai.onrender.com/)
 
 [![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
