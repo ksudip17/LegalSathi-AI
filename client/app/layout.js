@@ -34,10 +34,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ne" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/favicon.png" />
-      </head>
+  <link rel="icon" href="/favicon.png?v=2" type="image/png" />
+  <link rel="shortcut icon" href="/favicon.png?v=2" />
+  <link rel="apple-touch-icon" href="/favicon.png?v=2" />
+     </head> 
       <body className={`${geist.variable} antialiased min-h-screen bg-background`}>
         {children}
         <Toaster position="top-right" richColors />
