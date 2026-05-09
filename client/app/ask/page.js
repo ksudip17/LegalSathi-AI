@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Scale, ArrowLeft } from "lucide-react";
+import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -124,7 +125,15 @@ export default function AskPage() {
       <nav className="border-b border-border px-6 py-4 shrink-0">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Scale className="text-primary w-6 h-6" />
+            <Image
+              src="/logo.png"
+              alt="LegalSaathi"
+              width={28}
+              height={28}
+              unoptimized
+              priority
+              className="w-7 h-7"
+            />
             <span className="font-bold text-xl">LegalSaathi</span>
           </div>
           <Link href="/dashboard">

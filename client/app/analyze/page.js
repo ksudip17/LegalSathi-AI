@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   Scale,
@@ -135,7 +136,15 @@ export default function AnalyzePage() {
       <nav className="border-b border-border px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Scale className="text-primary w-6 h-6" />
+            <Image
+              src="/logo.png"
+              alt="LegalSaathi"
+              width={28}
+              height={28}
+              unoptimized
+              priority
+              className="w-7 h-7"
+            />
             <span className="font-bold text-xl">LegalSaathi</span>
           </div>
           <Link href="/dashboard">
