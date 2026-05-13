@@ -221,8 +221,8 @@ Git
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/ksudip17/LegalSathi-.git
-cd LegalSathi-
+git clone https://github.com/ksudip17/LegalSathi-AI.git
+cd LegalSathi-AI
 ```
 
 ### 2. Setup Frontend
