@@ -28,8 +28,8 @@ app.use(helmet());
 // ─── CORS ─────────────────────────────────────────────────────
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://legalsaathi-blush.vercel.app", // old — keep for safety
-  "https://legalsaathi-ai.vercel.app",     // new — add this
+  "https://legalsaathi-ai.vercel.app",
+  "https://legalsaathi.mooo.com",
   process.env.CLIENT_URL,
 ].filter(Boolean).map((origin) => origin.replace(/\/$/, ""));
 
