@@ -9,8 +9,8 @@
 **Understand your legal rights in Nepali, Hindi, and English — instantly.**
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-legalsaathi--ai.vercel.app-2563EB?style=for-the-badge)](https://legalsaathi-ai.vercel.app)
-[![Backend](https://img.shields.io/badge/🚀_Backend-Render-22C55E?style=for-the-badge)](https://legalsaathi-backend.onrender.com)
-[![AI Service](https://img.shields.io/badge/🤖_AI_Service-FastAPI-F59E0B?style=for-the-badge)](https://legalsaathi-ai.onrender.com/)
+[![Backend](https://img.shields.io/badge/🚀_Backend-AWS_EC2-22C55E?style=for-the-badge)](https://legalsaathi.mooo.com/api/)
+[![AI Service](https://img.shields.io/badge/🤖_AI_Service-FastAPI-F59E0B?style=for-the-badge)](https://legalsaathi.mooo.com/ai)
 
 [![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
@@ -56,7 +56,7 @@ LegalSaathi bridges this gap — giving every Nepali citizen free access to lega
 ├─────────────────┬───────────────────┬───────────────────┤
 │   Next.js 16    │   Express.js      │    FastAPI        │
 │   Frontend      │   API Gateway     │    AI Service     │
-│   Vercel        │   Render          │    Render         │
+│   Vercel        │   AWS EC2         │    AWS EC2        │
 └─────────────────┴───────────────────┴───────────────────┘
          │                  │                  │
          │                  ▼                  ▼
@@ -136,7 +136,7 @@ Saved to MongoDB for history
 | Technology | Purpose |
 |-----------|---------|
 | Vercel | Frontend deployment |
-| Render | Backend + AI service deployment |
+| AWS EC2 | Backend + AI service deployment |
 | MongoDB Atlas | Cloud database |
 | Weaviate Cloud | Vector database cloud |
 | Cloudinary | Media storage CDN |
@@ -382,8 +382,18 @@ LegalSaathi's RAG pipeline is trained on Nepal's actual legal documents:
 | Service | Platform | URL |
 |---------|---------|-----|
 | Frontend | Vercel | [legalsaathi-ai.vercel.app](https://legalsaathi-ai.vercel.app) |
-| Backend | Render | [legalsaathi-backend.onrender.com](https://legalsaathi-backend.onrender.com) |
-| AI Service | Render | [legalsaathi-ai.onrender.com](https://legalsaathi-ai.onrender.com) |
+| Backend (API) | AWS EC2 | [https://legalsaathi.mooo.com/api](https://legalsaathi.mooo.com/api) |
+| AI Service | AWS EC2 | [https://legalsaathi.mooo.com/ai](https://legalsaathi.mooo.com/ai) |
+
+**Production base URLs (AWS EC2)**
+
+| Purpose | URL |
+|---------|-----|
+| API base | `https://legalsaathi.mooo.com/api` |
+| AI base | `https://legalsaathi.mooo.com/ai` |
+| Health check | `https://legalsaathi.mooo.com/api/` |
+
+Point your **Vercel** frontend env vars at these hosts: `NEXT_PUBLIC_NODE_API_URL=https://legalsaathi.mooo.com/api` and `NEXT_PUBLIC_AI_API_URL=https://legalsaathi.mooo.com/ai`. On the **Node** server, set `AI_SERVICE_URL=https://legalsaathi.mooo.com/ai` (no trailing slash required). For **Google OAuth**, use `GOOGLE_CALLBACK_URL=https://legalsaathi.mooo.com/api/auth/google/callback` and register the same redirect URI in Google Cloud Console.
 
 ---
 
