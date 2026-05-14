@@ -155,6 +155,19 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/api", (req, res) => {
+  res.json({
+    success: true,
+    message: "LegalSaathi API is running 🇳🇵",
+    version: "1.0.0",
+    endpoints: {
+      auth: "/api/auth",
+      documents: "/api/documents",
+      legal: "/api/legal",
+    },
+  });
+});
+
 // ─── 404 Handler ──────────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({
