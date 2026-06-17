@@ -66,7 +66,7 @@ export default function RegisterPage() {
         phone: formData.phone,
         password: formData.password,
       });
-      toast.success("Account created! Welcome to LegalSaathi 🇳🇵");
+      toast.success("Account created! Welcome to LegalSaathi ");
       router.push("/dashboard");
     } catch (error) {
       toast.error(error.message || "Registration failed. Please try again.");
@@ -271,7 +271,7 @@ export default function RegisterPage() {
         </Card>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          © 2026 LegalSaathi 🇳🇵 — Built for Nepal
+          © 2026 LegalSaathi  — Built for Nepal
         </p>
 
       </div>

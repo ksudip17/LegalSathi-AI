@@ -99,7 +99,7 @@ Severity must be: low, medium, high, or critical"""
                 if is_rate_limit_error(e):
                     if attempt < 2:
                         wait_time = (attempt + 1) * 30
-                        print(f"⚠️ Rate limit. Waiting {wait_time}s...")
+                        print(f" Rate limit. Waiting {wait_time}s...")
                         await asyncio.sleep(wait_time)
                         continue
                     else:
@@ -112,7 +112,7 @@ Severity must be: low, medium, high, or critical"""
     except HTTPException:
         raise
     except Exception as e:
-        print(f"❌ legal_check error: {e}")
+        print(f" legal_check error: {e}")
         raise HTTPException(
             status_code=500,
             detail="Failed to check legal statement. Please try again."

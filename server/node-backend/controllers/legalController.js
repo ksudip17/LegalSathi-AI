@@ -63,7 +63,7 @@ export const askLegalQuestion = async (req, res) => {
         message: "AI service is currently unavailable.",
       });
     }
-    console.error(`❌ askLegalQuestion error: ${error.message}`);
+    console.error(` askLegalQuestion error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to process your question. Please try again.",
@@ -129,7 +129,7 @@ export const getRightsByCategory = async (req, res) => {
         message: "AI service is currently unavailable.",
       });
     }
-    console.error(`❌ getRightsByCategory error: ${error.message}`);
+    console.error(` getRightsByCategory error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch rights. Please try again.",
@@ -174,7 +174,7 @@ export const searchLegalCorpus = async (req, res) => {
         message: "Search timed out. Please try again.",
       });
     }
-    console.error(`❌ searchLegalCorpus error: ${error.message}`);
+    console.error(` searchLegalCorpus error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Search failed. Please try again.",
@@ -198,37 +198,37 @@ export const getLegalCategories = async (req, res) => {
       {
         id: "land",
         label: { ne: "जग्गा तथा सम्पत्ति", hi: "भूमि और संपत्ति", en: "Land & Property" },
-        icon: "🏔️",
+        icon: "",
         laws: ["Land Act Nepal", "Muluki Civil Code 2074 — Part 4"],
       },
       {
         id: "labor",
         label: { ne: "श्रम तथा रोजगार", hi: "श्रम और रोजगार", en: "Labor & Employment" },
-        icon: "👷",
+        icon: "",
         laws: ["Labor Act 2074", "Foreign Employment Act Nepal"],
       },
       {
         id: "criminal",
         label: { ne: "फौजदारी", hi: "आपराधिक", en: "Criminal" },
-        icon: "⚖️",
+        icon: "",
         laws: ["Muluki Criminal Code 2074", "Criminal Procedure Code"],
       },
       {
         id: "family",
         label: { ne: "परिवार तथा विवाह", hi: "परिवार और विवाह", en: "Family & Marriage" },
-        icon: "👨‍👩‍👧",
+        icon: "",
         laws: ["Muluki Civil Code 2074 — Part 2", "Children's Act Nepal"],
       },
       {
         id: "consumer",
         label: { ne: "उपभोक्ता संरक्षण", hi: "उपभोक्ता संरक्षण", en: "Consumer Protection" },
-        icon: "🛒",
+        icon: "",
         laws: ["Consumer Protection Act Nepal 2075"],
       },
       {
         id: "civil",
         label: { ne: "देवानी", hi: "नागरिक", en: "Civil" },
-        icon: "📜",
+        icon: "",
         laws: ["Muluki Civil Code 2074", "Civil Procedure Code"],
       },
     ];
@@ -241,7 +241,7 @@ export const getLegalCategories = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(`❌ getLegalCategories error: ${error.message}`);
+    console.error(` getLegalCategories error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch categories.",
@@ -313,7 +313,7 @@ export const checkLegalStatement = async (req, res) => {
         message: "AI is busy. Please wait 30 seconds and try again.",
       });
     }
-    console.error(`❌ checkLegalStatement error: ${error.message}`);
+    console.error(` checkLegalStatement error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to check statement. Please try again.",

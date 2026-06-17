@@ -8,9 +8,9 @@
 
 **Understand your legal rights in Nepali, Hindi, and English — instantly.**
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-legalsaathi--ai.vercel.app-2563EB?style=for-the-badge)](https://legalsaathi-ai.vercel.app)
-[![Backend](https://img.shields.io/badge/🚀_Backend-AWS_EC2-22C55E?style=for-the-badge)](https://legalsaathi.mooo.com/api/)
-[![AI Service](https://img.shields.io/badge/🤖_AI_Service-FastAPI-F59E0B?style=for-the-badge)](https://legalsaathi.mooo.com/ai)
+[![Live Demo](https://img.shields.io/badge/_Live_Demo-legalsaathi--ai.vercel.app-2563EB?style=for-the-badge)](https://legalsaathi-ai.vercel.app)
+[![Backend](https://img.shields.io/badge/_Backend-AWS_EC2-22C55E?style=for-the-badge)](https://legalsaathi.mooo.com/api/)
+[![AI Service](https://img.shields.io/badge/_AI_Service-FastAPI-F59E0B?style=for-the-badge)](https://legalsaathi.mooo.com/ai)
 
 [![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
@@ -24,7 +24,7 @@
 
 ---
 
-## 🇳🇵 The Problem
+##  The Problem
 
 > **73% of Nepali citizens cannot afford a lawyer.**
 > Most don't know their basic legal rights.
@@ -34,21 +34,21 @@ LegalSaathi bridges this gap: free AI-powered legal guidance in Nepali, Hindi, a
 
 ---
 
-## ✨ Features
+##  Features
 
 | Feature | Description |
 |---------|-------------|
-| 📄 **Document Analyzer** | Upload any legal document (PDF/image) → OCR extracts text → RAG pipeline → Plain Nepali/English summary + rights + next steps |
-| ⚖️ **Legal Q&A Chat** | Ask any legal question in Nepali/Hindi/English → AI searches Nepal law corpus → Answers with exact law citations |
-| 🔍 **Is This Legal?** | Describe any situation → Instant LEGAL/ILLEGAL/UNCLEAR verdict based on Nepal law |
-| 🛡️ **Rights Navigator** | Explore your rights by category — Land, Labor, Criminal, Family, Consumer |
-| 📋 **Document History** | All analyzed documents saved with summaries and timestamps |
-| 🌐 **Multilingual** | Full support for Nepali (नेपाली), Hindi (हिन्दी), and English |
-| 🔐 **Google OAuth** | Sign in with Google — secure, fast, no password needed |
+|  **Document Analyzer** | Upload any legal document (PDF/image) → OCR extracts text → RAG pipeline → Plain Nepali/English summary + rights + next steps |
+|  **Legal Q&A Chat** | Ask any legal question in Nepali/Hindi/English → AI searches Nepal law corpus → Answers with exact law citations |
+|  **Is This Legal?** | Describe any situation → Instant LEGAL/ILLEGAL/UNCLEAR verdict based on Nepal law |
+|  **Rights Navigator** | Explore your rights by category — Land, Labor, Criminal, Family, Consumer |
+|  **Document History** | All analyzed documents saved with summaries and timestamps |
+|  **Multilingual** | Full support for Nepali (नेपाली), Hindi (हिन्दी), and English |
+|  **Google OAuth** | Sign in with Google — secure, fast, no password needed |
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -104,7 +104,7 @@ Saved to MongoDB for document history
 
 ---
 
-## ⚙️ Key Engineering Decisions
+##  Key Engineering Decisions
 
 | Decision | What I chose | Why — not just what |
 |----------|-------------|---------------------|
@@ -118,7 +118,7 @@ Saved to MongoDB for document history
 
 ---
 
-## 📊 Measured Results
+##  Measured Results
 
 - **~70% reduction** in manual legal document lookup time via OCR + RAG pipeline
 - **12 secured REST endpoints** across 7 security layers (OAuth, JWT, rate limiting, XSS sanitization, NoSQL injection prevention, Helmet headers, CORS whitelist)
@@ -127,7 +127,7 @@ Saved to MongoDB for document history
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Frontend
 | Technology | Purpose |
@@ -169,7 +169,7 @@ Saved to MongoDB for document history
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 legalsathi/
@@ -229,7 +229,7 @@ legalsathi/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -286,7 +286,7 @@ python3 data/seed_from_pdfs.py       # Seed from Nepal law PDFs
 
 ---
 
-## 🔑 Environment Variables
+##  Environment Variables
 
 ### Frontend (`client/.env.local`)
 ```bash
@@ -324,7 +324,7 @@ TESSERACT_CMD=/usr/bin/tesseract
 
 ---
 
-## 🧠 Nepal Legal Corpus
+##  Nepal Legal Corpus
 
 | Document | Coverage |
 |---------|----------|
@@ -340,20 +340,20 @@ TESSERACT_CMD=/usr/bin/tesseract
 
 ---
 
-## 🔒 Security Features
+##  Security Features
 
-- ✅ JWT stored in `httpOnly` cookies — XSS safe
-- ✅ `sameSite: lax` — CSRF protected
-- ✅ XSS input sanitisation on all endpoints
-- ✅ NoSQL injection prevention
-- ✅ Rate limiting — 500 req/15min general, 20 req/15min auth
-- ✅ Helmet.js security headers
-- ✅ CORS whitelist with origin validation
-- ✅ File type and size validation on upload
+-  JWT stored in `httpOnly` cookies — XSS safe
+-  `sameSite: lax` — CSRF protected
+-  XSS input sanitisation on all endpoints
+-  NoSQL injection prevention
+-  Rate limiting — 500 req/15min general, 20 req/15min auth
+-  Helmet.js security headers
+-  CORS whitelist with origin validation
+-  File type and size validation on upload
 
 ---
 
-## 📊 API Endpoints
+##  API Endpoints
 
 ### Auth (`/api/auth`)
 | Method | Endpoint | Description |
@@ -387,7 +387,7 @@ TESSERACT_CMD=/usr/bin/tesseract
 
 ---
 
-## 🌍 Deployment
+##  Deployment
 
 | Service | Platform | URL |
 |---------|---------|-----|
@@ -402,7 +402,7 @@ TESSERACT_CMD=/usr/bin/tesseract
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 **Sudip Khatiwada** — AI Backend Engineer
 Production RAG Pipelines · LLM Integration · Node.js · FastAPI · AWS
@@ -413,13 +413,13 @@ Production RAG Pipelines · LLM Integration · Node.js · FastAPI · AWS
 
 ---
 
-## 📄 License
+##  License
 
 MIT License
 
 ---
 
-## ⚠️ Disclaimer
+##  Disclaimer
 
 LegalSaathi provides general legal information based on Nepal law. This is not a substitute for professional legal advice. Always consult a qualified lawyer for serious legal matters.
 
@@ -427,7 +427,7 @@ LegalSaathi provides general legal information based on Nepal law. This is not a
 
 <div align="center">
 
-**Built for Nepal 🇳🇵**
+**Built for Nepal **
 
 *न्याय सबैको लागि — Justice for Everyone*
 

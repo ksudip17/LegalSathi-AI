@@ -105,9 +105,9 @@ export const analyzeDocument = async (req, res) => {
             document.cloudinaryPublicId,
             fileType === "pdf" ? "raw" : "image"
           );
-          console.log("🧹 Cleaned up Cloudinary file after AI failure.");
+          console.log(" Cleaned up Cloudinary file after AI failure.");
         } catch (cleanupError) {
-          console.error(`❌ Cloudinary cleanup failed: ${cleanupError.message}`);
+          console.error(` Cloudinary cleanup failed: ${cleanupError.message}`);
         }
       }
 
@@ -116,7 +116,7 @@ export const analyzeDocument = async (req, res) => {
       document.processingTime = Date.now() - startTime;
       await document.save();
 
-      console.error(`❌ AI Service error: ${aiError.message}`);
+      console.error(` AI Service error: ${aiError.message}`);
 
       return res.status(502).json({
         success: false,
@@ -126,7 +126,7 @@ export const analyzeDocument = async (req, res) => {
     }
 
   } catch (error) {
-    console.error(`❌ analyzeDocument error: ${error.message}`);
+    console.error(` analyzeDocument error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Document analysis failed. Please try again.",
@@ -173,7 +173,7 @@ export const getUserDocuments = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(`❌ getUserDocuments error: ${error.message}`);
+    console.error(` getUserDocuments error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch documents.",
@@ -202,7 +202,7 @@ export const getDocumentById = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(`❌ getDocumentById error: ${error.message}`);
+    console.error(` getDocumentById error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch document.",
@@ -244,7 +244,7 @@ export const deleteDocument = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(`❌ deleteDocument error: ${error.message}`);
+    console.error(` deleteDocument error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to delete document.",
@@ -322,7 +322,7 @@ export const retryAnalysis = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(`❌ retryAnalysis error: ${error.message}`);
+    console.error(` retryAnalysis error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Retry failed. Please try again later.",

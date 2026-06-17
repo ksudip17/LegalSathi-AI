@@ -188,7 +188,7 @@ export default function DocumentUpload({
               </p>
               {state === "success" && (
                 <p className="text-xs text-green-600 font-medium mt-0.5">
-                  ✓ Analysis complete
+                   Analysis complete
                 </p>
               )}
             </div>

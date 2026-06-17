@@ -15,19 +15,19 @@ const LANGUAGES = [
     code: "ne",
     label: "नेपाली",
     englishLabel: "Nepali",
-    flag: "🇳🇵",
+    flag: "",
   },
   {
     code: "hi",
     label: "हिंदी",
     englishLabel: "Hindi",
-    flag: "🇮🇳",
+    flag: "",
   },
   {
     code: "en",
     label: "English",
     englishLabel: "English",
-    flag: "🇬🇧",
+    flag: "",
   },
 ];
 

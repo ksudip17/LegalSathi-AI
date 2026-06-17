@@ -16,10 +16,10 @@ pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
 def verify_tesseract():
     try:
         version = pytesseract.get_tesseract_version()
-        print(f"✅ Tesseract version: {version}")
+        print(f" Tesseract version: {version}")
         return True
     except Exception as e:
-        print(f"⚠️ Tesseract not available: {e}")
+        print(f" Tesseract not available: {e}")
         return False
 
 TESSERACT_AVAILABLE = verify_tesseract()
@@ -27,7 +27,7 @@ TESSERACT_AVAILABLE = verify_tesseract()
 # ─── Extract Text from Image ──────────────────────────────────
 def extract_text_from_image(image_path: str, language: str = "ne") -> str:
     if not TESSERACT_AVAILABLE:
-        print("⚠️ Tesseract not available — skipping image OCR")
+        print(" Tesseract not available — skipping image OCR")
         return ""
     try:
         lang_map = {
@@ -49,7 +49,7 @@ def extract_text_from_image(image_path: str, language: str = "ne") -> str:
         return text.strip()
 
     except Exception as e:
-        print(f"❌ OCR image error: {e}")
+        print(f" OCR image error: {e}")
         return ""
 
 # ─── Extract Text from PDF ────────────────────────────────────
@@ -76,13 +76,13 @@ def extract_text_from_pdf(pdf_path: str, language: str = "ne") -> str:
                         full_text += f"\n--- Page {page_num + 1} (OCR) ---\n{ocr_text}"
                         os.unlink(tmp.name)
                 else:
-                    print(f"⚠️ Page {page_num + 1} has no text and Tesseract unavailable")
+                    print(f" Page {page_num + 1} has no text and Tesseract unavailable")
 
         doc.close()
         return full_text.strip()
 
     except Exception as e:
-        print(f"❌ OCR PDF error: {e}")
+        print(f" OCR PDF error: {e}")
         return ""
 
 # ─── Extract Text from Cloudinary URL ────────────────────────
@@ -112,11 +112,11 @@ async def extract_text_from_url(
         return text
 
     except httpx.HTTPError as e:
-        print(f"❌ Failed to download file from Cloudinary: {e}")
+        print(f" Failed to download file from Cloudinary: {e}")
         return ""
 
     except Exception as e:
-        print(f"❌ extract_text_from_url error: {e}")
+        print(f" extract_text_from_url error: {e}")
         return ""
 
 # ─── Clean Extracted Text ─────────────────────────────────────

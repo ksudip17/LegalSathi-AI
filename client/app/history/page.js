@@ -341,7 +341,7 @@ export default function HistoryPage() {
                     <div className="mt-4 pt-4 border-t border-border space-y-3">
                       <div>
                         <p className="text-sm font-medium text-foreground mb-1">
-                          📄 Summary
+                           Summary
                         </p>
                         <p className="text-sm text-muted-foreground leading-relaxed">
                           {doc.analysis.summary}
@@ -351,12 +351,12 @@ export default function HistoryPage() {
                       {doc.analysis.rights?.length > 0 && (
                         <div>
                           <p className="text-sm font-medium text-foreground mb-1">
-                            ⚖️ Your Rights
+                             Your Rights
                           </p>
                           <ul className="space-y-1">
                             {doc.analysis.rights.map((right, i) => (
                               <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                                <span className="text-green-500 mt-0.5">✓</span>
+                                <span className="text-green-500 mt-0.5"></span>
                                 {right}
                               </li>
                             ))}
@@ -368,7 +368,7 @@ export default function HistoryPage() {
                         <div className="flex flex-wrap gap-2">
                           {doc.analysis.lawsCited.map((law, i) => (
                             <Badge key={i} variant="secondary" className="text-xs">
-                              📚 {law}
+                               {law}
                             </Badge>
                           ))}
                         </div>

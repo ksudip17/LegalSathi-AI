@@ -29,7 +29,7 @@ const VERDICT_CONFIG = {
     badge: "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
     label: "LEGAL",
     labelNp: "कानुनी",
-    emoji: "✅",
+    emoji: "",
   },
   ILLEGAL: {
     icon: XCircle,
@@ -39,7 +39,7 @@ const VERDICT_CONFIG = {
     badge: "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300",
     label: "ILLEGAL",
     labelNp: "गैरकानुनी",
-    emoji: "❌",
+    emoji: "",
   },
   UNCLEAR: {
     icon: AlertCircle,
@@ -49,7 +49,7 @@ const VERDICT_CONFIG = {
     badge: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300",
     label: "UNCLEAR",
     labelNp: "अस्पष्ट",
-    emoji: "⚠️",
+    emoji: "",
   },
 };
 
@@ -92,7 +92,7 @@ export default function LegalVerdict({ result, statement }) {
   // ─── Copy to Clipboard ────────────────────────────────────
   const handleCopy = () => {
     const text = `
-⚖️ LegalSaathi — Legal Check Result
+ LegalSaathi — Legal Check Result
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Statement: "${statement}"
@@ -112,7 +112,7 @@ ${citizen_rights?.map((r) => `• ${r}`).join("\n")}
 Recommended Action: ${recommended_action}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🇳🇵 LegalSaathi — न्याय सबैको लागि
+ LegalSaathi — न्याय सबैको लागि
     `.trim();
 
     navigator.clipboard.writeText(text);
@@ -153,7 +153,7 @@ Recommended Action: ${recommended_action}
 <body>
   <div class="header">
     <div>
-      <div class="logo">⚖️ LegalSaathi</div>
+      <div class="logo"> LegalSaathi</div>
       <div style="color:#666; font-size:13px;">Legal Check Report · ${new Date().toLocaleDateString()}</div>
     </div>
   </div>
@@ -168,32 +168,32 @@ Recommended Action: ${recommended_action}
   </div>
 
   <div class="section">
-    <div class="section-title">📋 Detailed Explanation</div>
+    <div class="section-title"> Detailed Explanation</div>
     <p>${detailed_explanation}</p>
   </div>
 
   ${laws_violated?.length > 0 ? `
   <div class="section">
-    <div class="section-title">📚 Laws Referenced</div>
+    <div class="section-title"> Laws Referenced</div>
     <ul>${laws_violated.map((l) => `<li>${l}</li>`).join("")}</ul>
   </div>` : ""}
 
   ${citizen_rights?.length > 0 ? `
   <div class="section">
-    <div class="section-title">⚖️ Your Rights</div>
+    <div class="section-title"> Your Rights</div>
     <ul>${citizen_rights.map((r) => `<li>${r}</li>`).join("")}</ul>
   </div>` : ""}
 
   ${recommended_action ? `
   <div class="section">
-    <div class="section-title">🔜 Recommended Action</div>
+    <div class="section-title"> Recommended Action</div>
     <p>${recommended_action}</p>
   </div>` : ""}
 
   <div class="footer">
-    ⚠️ This is general legal information only — not legal advice.<br/>
+     This is general legal information only — not legal advice.<br/>
     Always consult a qualified lawyer for serious legal matters.<br/>
-    🇳🇵 LegalSaathi — न्याय सबैको लागि
+     LegalSaathi — न्याय सबैको लागि
   </div>
 </body>
 </html>`;
@@ -210,7 +210,7 @@ Recommended Action: ${recommended_action}
 
   // ─── Share ────────────────────────────────────────────────
   const handleShare = async () => {
-    const shareText = `${config.emoji} "${statement}" — ${verdict} under Nepal Law\n\nChecked using LegalSaathi 🇳🇵\n${short_reason}`;
+    const shareText = `${config.emoji} "${statement}" — ${verdict} under Nepal Law\n\nChecked using LegalSaathi \n${short_reason}`;
 
     if (navigator.share) {
       try {
@@ -328,7 +328,7 @@ Recommended Action: ${recommended_action}
           <Card className="border border-border">
             <CardContent className="pt-5">
               <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">
-                📋 Detailed Explanation
+                 Detailed Explanation
               </p>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {detailed_explanation}
@@ -341,7 +341,7 @@ Recommended Action: ${recommended_action}
             <Card className="border border-border">
               <CardContent className="pt-5">
                 <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">
-                  📚 Laws Referenced
+                   Laws Referenced
                 </p>
                 <div className="space-y-2">
                   {laws_violated.map((law, i) => (
@@ -363,7 +363,7 @@ Recommended Action: ${recommended_action}
             <Card className="border border-border">
               <CardContent className="pt-5">
                 <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">
-                  ⚖️ Your Rights in This Situation
+                   Your Rights in This Situation
                 </p>
                 <div className="space-y-2">
                   {citizen_rights.map((right, i) => (
@@ -385,7 +385,7 @@ Recommended Action: ${recommended_action}
             <Card className="border border-primary/30 bg-primary/5">
               <CardContent className="pt-5">
                 <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">
-                  🔜 Recommended Action
+                   Recommended Action
                 </p>
                 <div className="flex items-start gap-3">
                   <ArrowRight className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -403,7 +403,7 @@ Recommended Action: ${recommended_action}
             <p className="text-xs text-yellow-800 dark:text-yellow-300 leading-relaxed">
               This is general legal information only — not legal advice.
               Always consult a qualified lawyer for serious legal matters.
-              🇳🇵 LegalSaathi — न्याय सबैको लागि
+               LegalSaathi — न्याय सबैको लागि
             </p>
           </div>
 

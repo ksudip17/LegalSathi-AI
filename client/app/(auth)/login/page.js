@@ -209,7 +209,7 @@ export default function LoginPage() {
         </Card>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          © 2026 LegalSaathi 🇳🇵 — Built for Nepal
+          © 2026 LegalSaathi  — Built for Nepal
         </p>
 
       </div>

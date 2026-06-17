@@ -28,10 +28,10 @@ async def summarize_document(request: SummarizeRequest):
 
         # For images without Tesseract — use vision-based extraction
         if is_image and not TESSERACT_AVAILABLE:
-            print(f"📸 Image file detected — using vision extraction (no Tesseract)")
+            print(f" Image file detected — using vision extraction (no Tesseract)")
             cleaned_text = await extract_text_vision(request.cloudinary_url, request.file_type)
         else:
-            print(f"📄 Extracting text from {request.file_type} document...")
+            print(f" Extracting text from {request.file_type} document...")
             raw_text = await extract_text_from_url(
                 cloudinary_url=request.cloudinary_url,
                 file_type=request.file_type,
@@ -45,8 +45,8 @@ async def summarize_document(request: SummarizeRequest):
                 detail="Could not extract text from document. The file may be empty or unreadable.",
             )
 
-        print(f"✅ Extracted {len(cleaned_text)} characters.")
-        print(f"🤖 Analyzing document with Groq...")
+        print(f" Extracted {len(cleaned_text)} characters.")
+        print(f" Analyzing document with Groq...")
 
         result = await summarize_legal_document(
             extracted_text=cleaned_text,
@@ -54,7 +54,7 @@ async def summarize_document(request: SummarizeRequest):
             category=request.category,
         )
 
-        print(f"✅ Analysis complete.")
+        print(f" Analysis complete.")
 
         return {
             "success": True,
@@ -73,7 +73,7 @@ async def summarize_document(request: SummarizeRequest):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"❌ Summarize endpoint error: {e}")
+        print(f" Summarize endpoint error: {e}")
         raise HTTPException(
             status_code=500,
             detail="Document summarization failed. Please try again.",
@@ -112,7 +112,7 @@ async def extract_text_vision(cloudinary_url: str, file_type: str) -> str:
         return response.choices[0].message.content.strip()
 
     except Exception as e:
-        print(f"❌ Vision extraction error: {e}")
+        print(f" Vision extraction error: {e}")
         return ""
     try:
         from groq import Groq
@@ -145,7 +145,7 @@ async def extract_text_vision(cloudinary_url: str, file_type: str) -> str:
         return response.choices[0].message.content.strip()
 
     except Exception as e:
-        print(f"❌ Vision extraction error: {e}")
+        print(f" Vision extraction error: {e}")
         return ""
     try:
         from core.langchain_pipeline import get_llm
@@ -182,5 +182,5 @@ async def extract_text_vision(cloudinary_url: str, file_type: str) -> str:
         return response.content.strip()
 
     except Exception as e:
-        print(f"❌ Vision extraction error: {e}")
+        print(f" Vision extraction error: {e}")
         return ""

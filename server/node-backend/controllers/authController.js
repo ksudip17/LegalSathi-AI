@@ -59,7 +59,7 @@ export const register = async (req, res) => {
         message: "An account with this email already exists.",
       });
     }
-    console.error(`❌ Register error: ${error.message}`);
+    console.error(` Register error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Registration failed. Please try again.",
@@ -127,7 +127,7 @@ export const login = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(`❌ Login error: ${error.message}`);
+    console.error(` Login error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Login failed. Please try again.",
@@ -165,7 +165,7 @@ export const googleAuthCallback = async (req, res) => {
     );
 
   } catch (error) {
-    console.error(`❌ Google callback error: ${error.message}`);
+    console.error(` Google callback error: ${error.message}`);
     return res.redirect(
       `${process.env.CLIENT_URL}/login?error=google_failed`
     );
@@ -204,7 +204,7 @@ export const getMe = async (req, res) => {
       user: user.toPublicJSON(),
     });
   } catch (error) {
-    console.error(`❌ GetMe error: ${error.message}`);
+    console.error(` GetMe error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch user profile.",
@@ -242,7 +242,7 @@ export const updateProfile = async (req, res) => {
       const messages = Object.values(error.errors).map((e) => e.message);
       return res.status(400).json({ success: false, message: messages[0] });
     }
-    console.error(`❌ UpdateProfile error: ${error.message}`);
+    console.error(` UpdateProfile error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Profile update failed.",
@@ -300,7 +300,7 @@ export const changePassword = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(`❌ ChangePassword error: ${error.message}`);
+    console.error(` ChangePassword error: ${error.message}`);
     return res.status(500).json({
       success: false,
       message: "Password change failed.",

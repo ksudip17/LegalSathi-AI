@@ -85,27 +85,27 @@ def chunk_by_section(text, chunk_size=600, overlap=80):
 
 # ─── Seed Single PDF ──────────────────────────────────────────
 def seed_pdf(pdf_path, source_name, category, language="en", country="nepal"):
-    print(f"\n📄 Processing: {source_name}")
+    print(f"\n Processing: {source_name}")
     print(f"   Path: {pdf_path}")
 
     if not os.path.exists(pdf_path):
-        print(f"   ⚠️  File not found — skipping.")
+        print(f"     File not found — skipping.")
         return 0
 
     text = extract_text_from_pdf(pdf_path)
     text = clean_extracted_text(text)
 
     if not text.strip():
-        print(f"   ⚠️  No text extracted — PDF may be scanned/image-based.")
+        print(f"     No text extracted — PDF may be scanned/image-based.")
         return 0
 
-    print(f"   ✅ Extracted {len(text):,} characters")
+    print(f"    Extracted {len(text):,} characters")
 
     chunks = chunk_by_section(text)
-    print(f"   ✅ Split into {len(chunks)} chunks")
+    print(f"    Split into {len(chunks)} chunks")
 
     if not chunks:
-        print(f"   ⚠️  No chunks generated — skipping.")
+        print(f"     No chunks generated — skipping.")
         return 0
 
     documents = []
@@ -128,9 +128,9 @@ def seed_pdf(pdf_path, source_name, category, language="en", country="nepal"):
         for i in range(0, len(documents), batch_size):
             batch = documents[i:i + batch_size]
             batch_insert_legal_documents(batch)
-            print(f"   ✅ Inserted batch {i // batch_size + 1} ({len(batch)} chunks)")
+            print(f"    Inserted batch {i // batch_size + 1} ({len(batch)} chunks)")
 
-    print(f"   🎉 Total seeded: {len(documents)} chunks from '{source_name}'")
+    print(f"    Total seeded: {len(documents)} chunks from '{source_name}'")
     return len(documents)
 
 # ─── Main Seeder ──────────────────────────────────────────────
@@ -209,8 +209,8 @@ if __name__ == "__main__":
         },
     ]
 
-    print("🌱 Starting full Nepal legal corpus seeding...")
-    print(f"📚 Total PDFs to process: {len(legal_pdfs)}")
+    print(" Starting full Nepal legal corpus seeding...")
+    print(f" Total PDFs to process: {len(legal_pdfs)}")
     print("=" * 60)
 
     total_chunks = 0
@@ -224,6 +224,6 @@ if __name__ == "__main__":
         total_chunks += count
 
     print("\n" + "=" * 60)
-    print(f"✅ Seeding complete!")
-    print(f"📊 Total chunks seeded: {total_chunks:,}")
-    print(f"🇳🇵 LegalSaathi full legal corpus is ready!")
+    print(f" Seeding complete!")
+    print(f" Total chunks seeded: {total_chunks:,}")
+    print(f" LegalSaathi full legal corpus is ready!")

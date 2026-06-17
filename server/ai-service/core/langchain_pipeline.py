@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-print("✅ Using direct Groq SDK — langchain_pipeline v3")
+print(" Using direct Groq SDK — langchain_pipeline v3")
 
 # ─── Direct Groq Client ───────────────────────────────────────
 def get_groq_client():
@@ -84,7 +84,7 @@ def safe_search_laws(query: str, category: str = None, top_k: int = 3) -> str:
             laws_context += f"- {law['source']} {law['section']}: {law['content'][:300]}\n"
         return laws_context
     except Exception as e:
-        print(f"⚠️ Weaviate unavailable — continuing without legal context: {e}")
+        print(f" Weaviate unavailable — continuing without legal context: {e}")
         return ""
 
 # ─── Document Summarization Pipeline ─────────────────────────
@@ -134,25 +134,25 @@ You MUST respond ONLY with valid JSON. No explanation, no markdown, no backticks
 
         for attempt in range(3):
             try:
-                print(f"🔄 Calling Groq API — attempt {attempt + 1}...")
+                print(f" Calling Groq API — attempt {attempt + 1}...")
                 content = await groq_complete_async(prompt, temperature=0.2)
-                print(f"✅ Groq response received — {len(content)} chars")
+                print(f" Groq response received — {len(content)} chars")
                 result = extract_json(content)
-                print(f"✅ JSON parsed successfully")
+                print(f" JSON parsed successfully")
                 return result
             except Exception as e:
-                print(f"❌ Attempt {attempt + 1} failed: {e}")
+                print(f" Attempt {attempt + 1} failed: {e}")
                 if is_rate_limit_error(e):
                     if attempt < 2:
                         wait_time = (attempt + 1) * 30
-                        print(f"⚠️ Rate limit. Waiting {wait_time}s...")
+                        print(f" Rate limit. Waiting {wait_time}s...")
                         await asyncio.sleep(wait_time)
                         continue
                     return rate_limit_response()
                 raise e
 
     except Exception as e:
-        print(f"❌ summarize_legal_document error: {e}")
+        print(f" summarize_legal_document error: {e}")
         if is_rate_limit_error(e):
             return rate_limit_response()
         return {
@@ -187,7 +187,7 @@ async def answer_legal_question(
                     laws_context += f"\n[{law['source']} - {law['section']}]\n{law['content'][:400]}\n"
                     laws_cited.append(f"{law['source']} - {law['section']}")
         except Exception as e:
-            print(f"⚠️ Weaviate unavailable for Q&A: {e}")
+            print(f" Weaviate unavailable for Q&A: {e}")
 
         history_text = ""
         if history:
@@ -222,7 +222,7 @@ Respond ONLY with valid JSON:
 
         for attempt in range(3):
             try:
-                print(f"🔄 Calling Groq for Q&A — attempt {attempt + 1}...")
+                print(f" Calling Groq for Q&A — attempt {attempt + 1}...")
                 content = await groq_complete_async(prompt, temperature=0.3)
                 result = extract_json(content)
                 result["laws_cited"] = result.get("laws_cited", laws_cited)
@@ -240,7 +240,7 @@ Respond ONLY with valid JSON:
                 raise e
 
     except Exception as e:
-        print(f"❌ answer_legal_question error: {e}")
+        print(f" answer_legal_question error: {e}")
         return {
             "answer": "Failed to process your question. Please try again.",
             "laws_cited": [],
@@ -273,7 +273,7 @@ async def get_rights_by_category(
                     laws_context += f"\n[{law['source']} - {law['section']}]\n{law['content'][:400]}\n"
                     laws_cited.append(f"{law['source']} - {law['section']}")
         except Exception as e:
-            print(f"⚠️ Weaviate unavailable for rights: {e}")
+            print(f" Weaviate unavailable for rights: {e}")
 
         prompt = f"""You are LegalSaathi, an expert AI legal assistant specializing in Nepal law.
 
@@ -315,7 +315,7 @@ Respond ONLY with valid JSON:
                 raise e
 
     except Exception as e:
-        print(f"❌ get_rights_by_category error: {e}")
+        print(f" get_rights_by_category error: {e}")
         return {
             "summary": "Failed to fetch rights. Please try again.",
             "rights": [],

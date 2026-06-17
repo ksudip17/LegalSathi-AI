@@ -106,7 +106,7 @@ def search_legal_corpus(query: str, category: str = None, top_k: int = 5):
         return formatted
 
     except Exception as e:
-        print(f"❌ Weaviate search error: {e}")
+        print(f" Weaviate search error: {e}")
         # Return empty list — don't crash the whole pipeline
         return []
     client = get_weaviate_client()

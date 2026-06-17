@@ -105,7 +105,7 @@ const MessageBubble = ({ message, onCopy }) => {
                   variant="secondary"
                   className="text-xs py-0.5"
                 >
-                  📚 {law}
+                   {law}
                 </Badge>
               ))}
             </div>

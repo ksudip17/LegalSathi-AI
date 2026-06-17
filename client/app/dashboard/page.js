@@ -60,7 +60,7 @@ const quickActions = [
   title: "Is This Legal?",
   desc: "Check if any situation is legal under Nepal law",
   href: "/legal-check",
-  badge: "New ✨",
+  badge: "New ",
 },
 ];
 
@@ -293,7 +293,7 @@ export default function DashboardPage() {
         {/* Greeting */}
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-foreground">
-            {getGreeting()}, {user?.fullName?.split(" ")[0]} 👋
+            {getGreeting()}, {user?.fullName?.split(" ")[0]} 
           </h1>
           <p className="text-muted-foreground mt-1">
             What legal matter can we help you with today?

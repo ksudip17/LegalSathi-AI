@@ -59,7 +59,7 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-6 py-24 text-center">
         <Badge className="mb-6 text-sm px-4 py-1" variant="secondary">
-          🇳🇵 Nepal's First AI Legal Assistant
+           Nepal's First AI Legal Assistant
         </Badge>
 
         <h1 className="text-5xl font-bold text-foreground leading-tight mb-6">
@@ -184,7 +184,7 @@ export default function LandingPage() {
           <Scale className="w-4 h-4 text-primary" />
           <span className="font-semibold text-foreground">LegalSaathi</span>
         </div>
-        <p>© 2026 LegalSaathi. Built for Nepal 🇳🇵</p>
+        <p>© 2026 LegalSaathi. Built for Nepal </p>
       </footer>
 
     </main>

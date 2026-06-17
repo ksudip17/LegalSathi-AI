@@ -37,7 +37,7 @@ app.include_router(legal_check_router, prefix="/legal-check", tags=["Legal Check
 async def root():
     return {
         "success": True,
-        "message": "LegalSaathi AI Service is running 🇳🇵",
+        "message": "LegalSaathi AI Service is running ",
         "version": "1.0.0",
         "endpoints": {
             "ocr": "/ocr/extract",

@@ -334,19 +334,19 @@ export default function LegalCheckPage() {
                   step: "1",
                   title: "Describe the Situation",
                   desc: "Type what happened in Nepali, Hindi, or English in plain simple words.",
-                  icon: "✍️",
+                  icon: "",
                 },
                 {
                   step: "2",
                   title: "AI Searches Nepal Law",
                   desc: "Our AI searches the full Nepal legal corpus including Constitution, Civil Code, Labor Act.",
-                  icon: "🔍",
+                  icon: "",
                 },
                 {
                   step: "3",
                   title: "Get Instant Verdict",
                   desc: "Receive a clear LEGAL or ILLEGAL verdict with exact law citations and your rights.",
-                  icon: "⚖️",
+                  icon: "",
                 },
               ].map((item) => (
                 <div key={item.step} className="text-center">

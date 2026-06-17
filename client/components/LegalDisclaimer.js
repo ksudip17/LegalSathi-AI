@@ -125,7 +125,7 @@ export default function LegalDisclaimer({ variant = "inline", dismissible = true
               <li>LegalSaathi is not liable for any decisions made based on this information</li>
             </ul>
             <p className="text-xs">
-              🇳🇵 LegalSaathi — न्याय सबैको लागि
+               LegalSaathi — न्याय सबैको लागि
             </p>
           </div>
 
